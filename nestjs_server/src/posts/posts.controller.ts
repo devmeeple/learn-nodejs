@@ -1,4 +1,4 @@
-import {Controller, Get, Param} from '@nestjs/common';
+import {Controller, Get, NotFoundException, Param} from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 /**
@@ -77,6 +77,13 @@ export class PostsController {
   // ID 파라미터를 가져오고 id 매개변수에 저장한다.
   @Get(':id')
   getPost(@Param('id') id: string) {
-    return posts.find((post) => post.id === +id);
+    const post =  posts.find((post) => post.id === +id); // 쿼리스트링 타입 변환
+
+    // 글이 없으면 기본제공 에러 반환(404)
+    if (!post) {
+      throw new NotFoundException();
+    }
+
+    return post;
   }
 }
