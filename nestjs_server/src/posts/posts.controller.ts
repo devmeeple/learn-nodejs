@@ -1,4 +1,4 @@
-import {Controller, Get} from '@nestjs/common';
+import {Controller, Get, Param} from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 /**
@@ -72,5 +72,11 @@ export class PostsController {
   @Get()
   getPosts() {
     return posts;
+  }
+
+  // ID 파라미터를 가져오고 id 매개변수에 저장한다.
+  @Get(':id')
+  getPost(@Param('id') id: string) {
+    return posts.find((post) => post.id === +id);
   }
 }
