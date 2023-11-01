@@ -1,4 +1,4 @@
-import {Controller, Get, NotFoundException, Param} from '@nestjs/common';
+import {Body, Controller, Get, NotFoundException, Param, Post} from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 /**
@@ -83,6 +83,31 @@ export class PostsController {
     if (!post) {
       throw new NotFoundException();
     }
+
+    return post;
+  }
+
+  @Post()
+  postPosts(
+      @Body('author') author: string,
+      @Body('title') title: string,
+      @Body('content') content: string,
+  ) {
+    const post: PostModel = {
+      id: posts[posts.length - 1].id + 1,
+      // key : value 형식으로 표현 값이 같을 때 축약해서 가능
+      author,
+      title,
+      content,
+      likeCount: 0,
+      commentCount: 0,
+    };
+
+    // 기존데이터를 넣기 위해 spread operator(...)를 사용, 새로운 데이터 추가 / 불변성 유지
+    posts = [
+        ...posts,
+        post,
+    ];
 
     return post;
   }
