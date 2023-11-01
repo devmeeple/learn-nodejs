@@ -1,4 +1,4 @@
-import {Body, Controller, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, NotFoundException, Param, Post, Put} from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 /**
@@ -141,4 +141,22 @@ export class PostsController {
 
     return post;
   }
+
+  @Delete(':id')
+  deletePost(
+      @Param('id') id: string
+  ) {
+    const post =  posts.find((post) => post.id === +id); // 쿼리스트링 타입 변환
+
+    // 글이 없으면 기본제공 에러 반환(404)
+    if (!post) {
+      throw new NotFoundException();
+    }
+
+    // id를 제외한 포스트만을 추가하기 위해 !== 를 사용, ===를 사용하면 일치하는 포스트만 남기고 다 사라짐. (의도대로 동작하지 않음 따라서 !==)
+    posts = posts.filter((post) => post.id !== +id);
+
+    return id;
+  }
+
 }
