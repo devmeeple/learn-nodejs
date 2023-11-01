@@ -9,3 +9,13 @@ node_modules/
 
 # Logs
 npm-debug.log*
+
+# Docker
+Dockerfile.*.sw[a-n]
+Dockerfile.*.sw[op]
+*.dockerignore
+.dockerenv
+.dockerinit
+
+# PostgreSQL
+postgres-data/
