@@ -58,10 +58,14 @@ export class PostsService {
         return this.postsRepository.find(); // 다수의 데이터를 가져올 때 사용
     }
 
-    getPostById(id: number) {
-        const post =  posts.find((post) => post.id === +id); // 쿼리스트링 타입 변환
+    async getPostById(id: number) {
+        const post =  await this.postsRepository.findOne({
+            where: {
+                id,
+            },
 
-        // 글이 없으면 기본제공 에러 반환(404)
+        });
+
         if (!post) {
             throw new NotFoundException();
         }
