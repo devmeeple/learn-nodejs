@@ -54,8 +54,8 @@ export class PostsService {
         private readonly postsRepository: Repository<PostsModel>
     ) {
     }
-    getAllPosts() {
-        return posts;
+    async getAllPosts() {
+        return this.postsRepository.find(); // 다수의 데이터를 가져올 때 사용
     }
 
     getPostById(id: number) {
