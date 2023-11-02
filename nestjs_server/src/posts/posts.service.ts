@@ -1,4 +1,7 @@
 import {Injectable, NotFoundException} from '@nestjs/common';
+import {Repository} from 'typeorm';
+import {PostsModel} from './entities/posts.entity';
+import {InjectRepository} from '@nestjs/typeorm';
 
 /**
  * author: string;
@@ -46,14 +49,23 @@ let posts: PostModel[] = [
 
 @Injectable()
 export class PostsService {
-    getAllPosts() {
-        return posts;
+    constructor(
+        @InjectRepository(PostsModel)
+        private readonly postsRepository: Repository<PostsModel>
+    ) {
+    }
+    async getAllPosts() {
+        return this.postsRepository.find(); // 다수의 데이터를 가져올 때 사용
     }
 
-    getPostById(id: number) {
-        const post =  posts.find((post) => post.id === +id); // 쿼리스트링 타입 변환
+    async getPostById(id: number) {
+        const post =  await this.postsRepository.findOne({
+            where: {
+                id,
+            },
 
-        // 글이 없으면 기본제공 에러 반환(404)
+        });
+
         if (!post) {
             throw new NotFoundException();
         }
@@ -61,28 +73,32 @@ export class PostsService {
         return post;
     }
 
-    createPost(author: string, title: string, content: string) {
-        const post: PostModel = {
-            id: posts[posts.length - 1].id + 1,
-            // key : value 형식으로 표현 값이 같을 때 축약해서 가능
+    async createPost(author: string, title: string, content: string) {
+        // 1) create -> 저장할 객체를 생성한다.
+        // 2) save -> 객체를 저장한다. (create 메서드에서 생성한 객체로)
+
+        // 비동기가 아닌 동기로 이루어짐(객체를 생성하기만 하기 때문에) 따라서 await 안해도 괜찮다.
+        const post = this.postsRepository.create({
             author,
             title,
             content,
             likeCount: 0,
             commentCount: 0,
-        };
+        });
 
-        // 기존데이터를 넣기 위해 spread operator(...)를 사용, 새로운 데이터 추가 / 불변성 유지
-        posts = [
-            ...posts,
-            post,
-        ];
-
-        return post;
+        return await this.postsRepository.save(post);
     }
 
-    updatePost(postId: number, author: string, title: string, content: string) {
-        const post = posts.find((post) => post.id === postId);
+    async updatePost(postId: number, author: string, title: string, content: string) {
+        // save의 기능
+        // 1) 만약에 데이터가 존재하지 않는다면 (id 기준으로) 새로 생성한다.
+        // 2) 만약에 데이터가 존재한다면 (같은 id의 값이 존재한다면) 존재하던 값을 업데이트 한다.
+
+        const post = await this.postsRepository.findOne({
+            where: {
+                id: postId,
+            },
+        });
 
         if (!post) {
             throw new NotFoundException();
@@ -100,21 +116,22 @@ export class PostsService {
             post.content = content;
         }
 
-        posts = posts.map((prevPost) => prevPost.id === postId ? post : prevPost);
-
-        return post;
+        return await this.postsRepository.save(post);
     }
 
-    deletePost(postId: number) {
-        const post =  posts.find((post) => post.id === postId); // 쿼리스트링 타입 변환
+    async deletePost(postId: number) {
+        const post = await this.postsRepository.findOne({
+            where: {
+                id: postId,
+            },
+        });
 
         // 글이 없으면 기본제공 에러 반환(404)
         if (!post) {
             throw new NotFoundException();
         }
 
-        // id를 제외한 포스트만을 추가하기 위해 !== 를 사용, ===를 사용하면 일치하는 포스트만 남기고 다 사라짐. (의도대로 동작하지 않음 따라서 !==)
-        posts = posts.filter((post) => post.id !== postId);
+        await this.postsRepository.delete(postId);
 
         return postId;
     }
