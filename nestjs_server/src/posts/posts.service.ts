@@ -73,24 +73,22 @@ export class PostsService {
         return post;
     }
 
-    createPost(author: string, title: string, content: string) {
-        const post: PostModel = {
-            id: posts[posts.length - 1].id + 1,
-            // key : value 형식으로 표현 값이 같을 때 축약해서 가능
+    async createPost(author: string, title: string, content: string) {
+        // 1) create -> 저장할 객체를 생성한다.
+        // 2) save -> 객체를 저장한다. (create 메서드에서 생성한 객체로)
+
+        // 비동기가 아닌 동기로 이루어짐(객체를 생성하기만 하기 때문에) 따라서 await 안해도 괜찮다.
+        const post = this.postsRepository.create({
             author,
             title,
             content,
             likeCount: 0,
             commentCount: 0,
-        };
+        });
 
-        // 기존데이터를 넣기 위해 spread operator(...)를 사용, 새로운 데이터 추가 / 불변성 유지
-        posts = [
-            ...posts,
-            post,
-        ];
+        const newPost = await this.postsRepository.save(post);
 
-        return post;
+        return newPost;
     }
 
     updatePost(postId: number, author: string, title: string, content: string) {
