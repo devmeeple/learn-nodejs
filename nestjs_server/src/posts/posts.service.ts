@@ -119,16 +119,19 @@ export class PostsService {
         return await this.postsRepository.save(post);
     }
 
-    deletePost(postId: number) {
-        const post =  posts.find((post) => post.id === postId); // 쿼리스트링 타입 변환
+    async deletePost(postId: number) {
+        const post = await this.postsRepository.findOne({
+            where: {
+                id: postId,
+            },
+        });
 
         // 글이 없으면 기본제공 에러 반환(404)
         if (!post) {
             throw new NotFoundException();
         }
 
-        // id를 제외한 포스트만을 추가하기 위해 !== 를 사용, ===를 사용하면 일치하는 포스트만 남기고 다 사라짐. (의도대로 동작하지 않음 따라서 !==)
-        posts = posts.filter((post) => post.id !== postId);
+        await this.postsRepository.delete(postId);
 
         return postId;
     }
