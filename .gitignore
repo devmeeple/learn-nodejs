@@ -17,5 +17,5 @@ Dockerfile.*.sw[op]
 .dockerenv
 .dockerinit
 
-# PostgreSQL
-nestjs_server/postgres-data/
+## PostgreSQL
+**/postgres-data/
