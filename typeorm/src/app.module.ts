@@ -5,11 +5,13 @@ import { AppService } from './app.service';
 import {UserModel} from './entity/user.entity';
 import {StudentModel, TeacherModel} from './entity/person.entity';
 import {AirplaneModel, BookModel, CarModel, ComputerModel, SingleBaseModel} from './entity/inheritance.entity';
+import {ProfileModel} from './entity/profile.entity';
 
 @Module({
   imports: [
       TypeOrmModule.forFeature([
           UserModel,
+          ProfileModel,
       ]),
       TypeOrmModule.forRoot({
         type: 'postgres',
@@ -27,6 +29,7 @@ import {AirplaneModel, BookModel, CarModel, ComputerModel, SingleBaseModel} from
             SingleBaseModel,
             ComputerModel,
             AirplaneModel,
+            ProfileModel,
         ],
         synchronize: true,
       })
