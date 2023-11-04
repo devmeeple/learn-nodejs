@@ -1,7 +1,18 @@
 import {Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {Role, UserModel} from './entity/user.entity';
-import {Repository} from 'typeorm';
+import {
+  Between,
+  Equal,
+  ILike, In, IsNull,
+  LessThan,
+  LessThanOrEqual,
+  Like,
+  MoreThan,
+  MoreThanOrEqual,
+  Not,
+  Repository,
+} from 'typeorm';
 import {ProfileModel} from './entity/profile.entity';
 import {PostModel} from './entity/post.entity';
 import {TagModel} from './entity/tag.entity';
@@ -21,47 +32,68 @@ export class AppController {
   }
 
   @Post('users')
-  postUser() {
-    return this.userRepository.save({
-      email: '1234@gmail.com',
-    });
+  async postUser() {
+    for (let i = 0; i < 100; i++) {
+      await this.userRepository.save({
+        email: `user-${i}@google.com`,
+      });
+    }
   }
 
   @Get('users')
   getUsers() {
     return this.userRepository.find({
+      where: {
+        // 아닌 경우 가져오기
+        // id: Not(1),
+        // id: LessThan(30),
+        // 적은경우 or 같은경우
+        // id: LessThanOrEqual(30),
+        // 많은경우
+        // id: MoreThan(30),
+        // 많거나 같은경우
+        // id: MoreThanOrEqual(30),
+        // 같은경우
+        // id: Equal(30),
+        // 유사값
+        // email: Like('%GOOGLE%'),
+        // 대문자 소문자 구분안하는 유사값
+        // email: ILike('%GOOGLE%'),
+        // 사이값
+        // id: Between(10, 15),
+        // 해당되는 여러개의 값
+        // id: In([1, 3, 5, 7, 99]),
+        // ID가 null인경우 가져오기
+        // id: IsNull(),
+      },
+
       // 어떤 프로퍼티를 선택할지
       // 기본은 모든 프로퍼티를 가져온다.
       // 만약에 select를 정의하지 않으면
       // select를 정의하면 정의된 프로퍼티들만 가져오게 된다.
-      select: {
-        id: true,
-        createdAt: true,
-        updatedAt: true,
-        version: true,
-        profile: {
-          id: true,
-        }
-      },
+      // select: {
+      //   id: true,
+      //   createdAt: true,
+      //   updatedAt: true,
+      //   version: true,
+      //   profile: {
+      //     id: true,
+      //   }
+      // },
       // 필터링할 조건을 입력하게 된다.
-      where: {
-        // profile: {
-        //   id: 3,
-        // }
-      },
       // 관계를 가져오는법
-      relations: {
-        profile: true,
-      },
+      // relations: {
+      //   profile: true,
+      // },
       // 오름차 내림차
       // ASC
       // DESC
-      order: {
-        id: 'DESC',
-      },
+      // order: {
+      //   id: 'DESC',
+      // },
       // 처음 몇개를 제외할지,
-      skip: 0,
-      take: 2,
+      // skip: 0,
+      // take: 2,
     });
   }
 
