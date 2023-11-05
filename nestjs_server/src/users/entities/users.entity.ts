@@ -1,4 +1,5 @@
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {RolesEnum} from '../const/roles.const';
 
 /**
  * id: number
@@ -11,11 +12,6 @@ import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
  *
  * role: [RolesEnum.USER, RolesEnum.ADMIN]
  */
-
-export enum RoleEnum {
-    USER = 'user',
-    ADMIN = 'admin',
-}
 
 @Entity()
 export class UsersModel {
@@ -44,11 +40,9 @@ export class UsersModel {
     password: string;
 
     @Column({
-        type: 'enum',
-        enum: RoleEnum,
-        default: RoleEnum.USER,
-
+        enum: Object.values(RolesEnum),
+        default: RolesEnum.USER,
     })
-    role: string;
+    role: RolesEnum;
 }
 
