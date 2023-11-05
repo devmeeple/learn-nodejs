@@ -55,7 +55,9 @@ export class PostsService {
     ) {
     }
     async getAllPosts() {
-        return this.postsRepository.find(); // 다수의 데이터를 가져올 때 사용
+        return this.postsRepository.find({
+            relations: ['author'],
+        }); // 다수의 데이터를 가져올 때 사용
     }
 
     async getPostById(id: number) {
@@ -63,7 +65,7 @@ export class PostsService {
             where: {
                 id,
             },
-
+            relations: ['author'],
         });
 
         if (!post) {
