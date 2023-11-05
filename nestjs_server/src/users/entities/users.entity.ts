@@ -1,5 +1,7 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {RolesEnum} from '../const/roles.const';
+import {PostModel} from '../../posts/posts.service';
+import {PostsModel} from '../../posts/entities/posts.entity';
 
 /**
  * id: number
@@ -44,5 +46,8 @@ export class UsersModel {
         default: RolesEnum.USER,
     })
     role: RolesEnum;
+
+    @OneToMany(() => PostsModel, (post) => post.author)
+    posts: PostModel[];
 }
 
