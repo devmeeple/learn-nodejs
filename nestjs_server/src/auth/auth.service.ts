@@ -88,12 +88,18 @@ export class AuthService {
          * 2) 기존 해시 (hash) -> 사용자 정보에 저장돼잇는 hash
          */
 
-        const passOk = bcrypt.compare(user.password, existingUser.password);
+        const passOk = await bcrypt.compare(user.password, existingUser.password);
 
         if (!passOk) {
             throw new UnauthorizedException('비밀번호가 틀렸습니다.');
         }
 
         return existingUser;
+    }
+
+    async loginWithEmail(user: Pick<UsersModel, 'email' | 'password'>) {
+        const existingUser = await this.authenticateWithEmailAndPassword(user);
+
+        return this.loginUser(existingUser);
     }
 }
