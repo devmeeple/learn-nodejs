@@ -42,7 +42,7 @@ export class AuthService {
      * { authorization: 'Basic {token}'}
      * { authorization: 'Bearer {token}'}
      */
-    async extractTokenFromHeader(header: string, isBearer: boolean) {
+    extractTokenFromHeader(header: string, isBearer: boolean) {
         // 'Basic {token}'
         // [Basic, {token}]
         // 'Bearer {token}'
@@ -57,6 +57,32 @@ export class AuthService {
 
         // const token = splitToken[1]
         return splitToken[1];
+    }
+
+    /**
+     * Basic 암호화
+     *
+     * 1) 암호화 -> email:password
+     * 2) email:password -> [email, password]
+     * 3) {email: email, password: password}
+     */
+    decodeBasicToken(base64String: string) {
+        // node 제공기능 Buffer
+        const decoded = Buffer.from(base64String, 'base64').toString('utf-8');
+
+        const split = decoded.split(':');
+
+        if (split.length !== 2) {
+            throw new UnauthorizedException('잘못된 유형의 토큰입니다.');
+        }
+
+        const email = split[0];
+        const password = split[1];
+
+        return {
+            email,
+            password,
+        }
     }
 
     /**
