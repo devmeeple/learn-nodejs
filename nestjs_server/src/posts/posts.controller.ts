@@ -40,8 +40,7 @@ export class PostsController {
   postPosts(
       @Body('authorId') authorId: number,
       @Body('title') title: string,
-      @Body('content') content: string,
-      @Body('isPublic', new DefaultValuePipe(true)) isPublic: boolean,
+      @Body('content') content: string
   ) {
     return this.postsService.createPost(authorId, title, content);
   }
