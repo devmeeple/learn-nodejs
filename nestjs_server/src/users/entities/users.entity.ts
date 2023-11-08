@@ -1,4 +1,4 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import {RolesEnum} from '../const/roles.const';
 import {PostModel} from '../../posts/posts.service';
 import {PostsModel} from '../../posts/entities/posts.entity';
@@ -49,5 +49,10 @@ export class UsersModel {
 
     @OneToMany(() => PostsModel, (post) => post.author)
     posts: PostModel[];
-}
 
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @CreateDateColumn()
+    createdAt: Date;
+}
