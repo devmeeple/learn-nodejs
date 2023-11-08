@@ -1,7 +1,8 @@
-import {Column, Entity, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from 'typeorm';
 import {RolesEnum} from '../const/roles.const';
 import {PostModel} from '../../posts/posts.service';
 import {PostsModel} from '../../posts/entities/posts.entity';
+import {BaseModel} from '../../common/entity/base.entity';
 
 /**
  * id: number
@@ -16,10 +17,7 @@ import {PostsModel} from '../../posts/entities/posts.entity';
  */
 
 @Entity()
-export class UsersModel {
-    @PrimaryGeneratedColumn()
-    id: number;
-
+export class UsersModel extends BaseModel {
     /**
      * 1) 길이가 20을 넘지 않을 것
      * 2) 유일무이한 값이 될 것
@@ -50,4 +48,3 @@ export class UsersModel {
     @OneToMany(() => PostsModel, (post) => post.author)
     posts: PostModel[];
 }
-
