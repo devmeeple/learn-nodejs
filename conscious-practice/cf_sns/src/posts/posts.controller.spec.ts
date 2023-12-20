@@ -1,43 +1,98 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostsController } from './posts.controller';
 import { PostsService } from './posts.service';
+import { NotFoundException } from '@nestjs/common';
+import { CreatePostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 describe('PostsController', () => {
-  let sut: PostsController;
-
+  let controller: PostsController;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [PostsController],
       providers: [PostsService],
     }).compile();
 
-    sut = module.get<PostsController>(PostsController);
+    controller = module.get<PostsController>(PostsController);
   });
 
-  describe('[GET] /', () => {
-    it('Post 인터페이스를 반환한다.', () => {
+  describe('[GET] /posts', () => {
+    it('PostModel 반환한다.', () => {
       // given
-      interface Post {
-        author: string;
-        title: string;
-        content: string;
-        likeCount: number;
-        commentCount: number;
-      }
-
-      const expected: Post = {
-        author: '마틴 파울러',
-        title: '리팩토링 2판',
-        content: '코드 구조를 체계적으로 개선하여 효율적인 리팩터링 구현하기',
-        likeCount: 0,
-        commentCount: 58,
-      };
 
       // when
-      const actual = sut.getPost();
+      const postList = controller.getPostList();
 
       // then
-      expect(actual).toStrictEqual(expected);
+      expect(postList).toBeInstanceOf(Array);
+      expect(postList).toHaveLength(3);
+    });
+  });
+
+  describe('[GET] /posts/:id', () => {
+    it('조회된 포스트를 반환한다', () => {
+      // given
+
+      // when
+      const post = controller.getPost('3');
+
+      // then
+      expect(post.id).toEqual(3);
+    });
+
+    it('게시물이 없으면 NotFound Exception 을 반환한다', () => {
+      // when + then
+      expect(() => controller.getPost('999')).toThrowError(NotFoundException);
+    });
+  });
+
+  describe('[POST] /posts', () => {
+    it('게시물을 작성한다', () => {
+      // given
+      const createDto: CreatePostDto = {
+        author: '테스트 작성자',
+        title: '테스트 작성',
+        content: '테스트 내용',
+        likeCount: 1,
+        commentCount: 1,
+      };
+      // when
+      const beforePostList = controller.getPostList().length;
+      const post = controller.create(createDto);
+      const afterPostList = controller.getPostList().length;
+
+      expect(post.id).toEqual(4);
+      expect(afterPostList).toBeGreaterThan(beforePostList);
+    });
+  });
+
+  describe('[PATCH] /posts/:id', () => {
+    it('수정된 게시글을 반환한다', () => {
+      // given
+      const updateDto: UpdatePostDto = {
+        author: '테스트 작성자2',
+      };
+      // when
+      const updatedPost = controller.update('1', updateDto);
+
+      // then
+      expect(updatedPost.author).toEqual('테스트 작성자2');
+    });
+  });
+
+  describe('[DELETE] /posts/:id', () => {
+    it('게시글을 삭제한다', () => {
+      // given
+      // when
+      const postId = controller.remove('3');
+
+      // then
+      expect(postId).toEqual('3');
+    });
+
+    it('삭제할 게시글이 없으면 에러를 반환한다', () => {
+      // expect
+      expect(() => controller.remove('999')).toThrowError(NotFoundException);
     });
   });
 });
