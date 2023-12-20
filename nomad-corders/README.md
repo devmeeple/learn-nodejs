@@ -86,3 +86,14 @@ yarn test:cov # npm rub test:cov
 yarn test:watch # npm run test:watch
 ```
 
+## 4. E2E TESTING
+
+테스트 환경도 실제 환경의 설정을 그대로 적용해야 한다.
+
+- 테스트에서 실행시키는 서버와 main.ts의 서버는 다른 서버다.
+    - main.ts는 실제서버를 의미한다. 테스트에서 구현하는 서버는 테스트용 서버다.
+
+- `it.todo`는 작성되어야 할 테스트를 계획할 때 사용한다.
+- e2e 테스트에서 `beforeEach` 구문을 `beforeAll` 구문으로 수정했다.
+    - 각 테스트 설정이 공유되도록 해서 편리하지만, 상태를 공유하기 때문에 부작용이 있을 수 있다.
+
