@@ -70,3 +70,19 @@ yarn add @nestjs/mapped-types
 - [Mapped Type](https://docs.nestjs.com/openapi/mapped-types)을 사용해서 재사용성을 높인다.
 - PartialType: 모든 속성이 선택사항으로 변경된다.
 
+## 3. UNIT TESTING
+
+단위테스트란 함수같은 하나의 단위를 테스트하는 방법이다.
+
+- 테스트가 충분히 작성되었는지 커버지리를 통해 확인할 수 있다. (100%의 함정에 빠지지 말자.)
+
+```shell
+yarn test:cov # npm rub test:cov
+```
+
+- 테스트 파일의 변경을 확인하고 변경된 테스트를 실행 시킬 수 있다.
+
+```shell
+yarn test:watch # npm run test:watch
+```
+
