@@ -30,3 +30,43 @@ nest new [프로젝트 이름]
 ### Service
 
 - 비즈니스 로직만을 포함한다. 예를들어 데이터 생성, 저장 및 업데이트가 포함된다.
+
+## 2. REST API
+
+### DTO와 유효성 검증
+
+- DTO는 왜 필요할까?
+    - DTO는 계층간 데이터 전송을 목적으로 사용되는 객체이다.
+    - 단일 책임 원칙(SRP)을 위반하지 않기 위해서 사용된다.
+    - `readonly` 키워드를 사용해서 불변성을 보장한다.
+- [유효성 검증](https://docs.nestjs.com/techniques/validation)
+    - 요청된 데이터를 검증하는 것은 매우 중요한 작업이다.
+    - 파이프를 사용해 데이터를 검증하고 원하는 형식으로 변환한다.
+
+```shell
+yarn add class-validator class-transformer
+```
+
+```typescript
+app.useGlobalPipes(
+  new ValidationPipe({
+    whitelist: true,
+    forbidNonWhitelisted: true,
+    transform: true,
+  }),
+);
+```
+
+- whitelist: 검증 대상에 해당되지 않는 요청을 제거한다.
+- forbidNonWhitelisted: 제거하지 않고 예외를 발생시킨다.
+- transform: 자동변환
+
+### Mapped Type
+
+```shell
+yarn add @nestjs/mapped-types
+```
+
+- [Mapped Type](https://docs.nestjs.com/openapi/mapped-types)을 사용해서 재사용성을 높인다.
+- PartialType: 모든 속성이 선택사항으로 변경된다.
+
