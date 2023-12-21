@@ -21,7 +21,7 @@ describe('PostsController', () => {
       // given
 
       // when
-      const postList = controller.getPostList();
+      const postList = controller.findAll();
 
       // then
       expect(postList).toBeInstanceOf(Array);
@@ -57,9 +57,9 @@ describe('PostsController', () => {
         commentCount: 1,
       };
       // when
-      const beforePostList = controller.getPostList().length;
+      const beforePostList = controller.findAll().length;
       const post = controller.create(createDto);
-      const afterPostList = controller.getPostList().length;
+      const afterPostList = controller.findAll().length;
 
       expect(post.id).toEqual(4);
       expect(afterPostList).toBeGreaterThan(beforePostList);
@@ -83,11 +83,12 @@ describe('PostsController', () => {
   describe('[DELETE] /posts/:id', () => {
     it('게시글을 삭제한다', () => {
       // given
+      const id = '1';
       // when
-      const postId = controller.remove('3');
+      const postId = controller.remove(id);
 
       // then
-      expect(postId).toEqual('3');
+      expect(postId).toEqual('1번 게시물이 삭제되었습니다.');
     });
 
     it('삭제할 게시글이 없으면 에러를 반환한다', () => {
