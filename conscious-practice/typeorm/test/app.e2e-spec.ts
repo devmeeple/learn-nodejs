@@ -1,7 +1,8 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { INestApplication } from '@nestjs/common';
+import { HttpStatus, INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { AppModule } from './../src/app.module';
+import { AppModule } from '../src/app.module';
+import { CreateUserDto } from '../src/dto/create-user.dto';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -15,10 +16,43 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  afterAll(async () => {
+    await app?.close();
+  });
+
+  it('/users (GET)', () => {
+    return request(app.getHttpServer()).get('/users').expect(HttpStatus.OK);
+  });
+
+  it('/users (POST)', async () => {
+    // Given
+    const createRequest: CreateUserDto = {
+      title: '테스트',
+    };
+
+    // When
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send(createRequest);
+
+    expect(response.statusCode).toEqual(HttpStatus.CREATED);
+    expect(response.body.title).toEqual('테스트');
+  });
+
+  it('/users/:id (PATCH)', async () => {
+    const oldTitle = '테스트';
+    const created = await request(app.getHttpServer()).post('/users').send({
+      title: oldTitle,
+    });
+    expect(created.statusCode).toEqual(HttpStatus.CREATED);
+    const id = created.body.id;
+
+    const newTitle = '수정된 제목';
+    const response = await request(app.getHttpServer())
+      .patch(`/users/${id}`)
+      .send({ title: newTitle })
+      .expect(HttpStatus.OK);
+
+    expect(response.body.title).toEqual('수정된 제목');
   });
 });

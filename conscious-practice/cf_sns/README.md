@@ -133,7 +133,7 @@ export class PostsModule {
         restart: always
         volumes: # 데이터 유지를 위해 매핑
           - ./프로젝트 디렉토리:/이미지 디렉토리 
-        # /postgres-data:/var/lib/postgresql/data
+        # ./postgres-data:/var/lib/postgresql/data
         ports:
           - "프로젝트 포트:이미지 포트"
         environment:
@@ -211,7 +211,22 @@ imports: [
 
 - 프로젝트 세팅
 
-```shell
+```text
 nest new [프로젝트 이름]
 yarn add @nestjs/typeorm typeorm pg
+docker-compose up
 ```
+
+### Column Decorator
+
+- **자주사용하는 요소**
+- @PrimaryGeneratedColumn(): 자동으로 ID를 증가시킨다.
+    - @PrimaryGeneratedColumn('uuid'): 유일무이한 값을 uuid 로 생성한다.
+- @PrimaryColumn(): 테이블에서 각 row를 기본으로 구분할 수 있는 컬럼을 직접 넣겠다.
+- @CreatedDateColumn(): 데이터 생성날짜와 시간이 자동으로 입력
+- @UpdatedDateColumn(): 데이터 수정날짜와 시간이 자동으로 입력
+- @VersionColumn(): 데이터가 수정 될 때마다 1씩 올라간다. 처음 생성시 값은 1
+    - save() 함수가 몇 번 호출되었는지 확인
+- @Column()
+    - @Generated('increment'): 기본 칼럼은 아닌데 값을 증가시킴(number)
+    - @Generated('uuid'): uuid로 생성(string)
