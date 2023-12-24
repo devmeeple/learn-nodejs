@@ -249,5 +249,24 @@ docker-compose up
 
 Enum을 사용할 수 있다.
 
+### Entity Embedding
+
+- [Embedding](https://dextto.tistory.com/225)
+- 중복되는 프로퍼티 값이 존재할 때 타입을 선언해서 중복된 값을 줄인다. (OOP를 적용해서 상속으로 풀어나가는 방법도 있다.)
+
+### Table Inheritance
+
+- [상속을 통한 테이블 중복 해결](https://orkhan.gitbook.io/typeorm/docs/entity-inheritance)
+- 클래스 상속을 사용해 데이터베이스 스키마에 매핑하는 방법이다.
+- 사용하는 방법은 일치하나 구성되는 방식은 전혀다른 2가지의 방법이 존재한다.
+    - Class Table Inheritance, Single Table Inheritance
+
+
+- Single Table Inheritance
+    - 모든 클래스(부모와 자식 모두)를 하나의 테이블에 매핑한다.
+    - 한 테이블의 모든 필드가 작성되며, 추가적인 칼럼을 통해 각 행(row)이 어떤 클래스 타입인지 식별한다.
+
+> 흔하게 관찰되는 방법은 Class Table Inheritance였다. Single Table Inheritance 같은 경우
+> 처음 알게 된 방법이다. 또한 지식 공유자는 자주 사용하는 방법은 아니라고 한다. 우선 이렇게 해결하는 방법이 있다는 사실을 명심하는 것으로 넘어가야겠다.
 
 
