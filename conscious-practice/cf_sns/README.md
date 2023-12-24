@@ -145,4 +145,64 @@ export class PostsModule {
 > 도커가 실행 중 인지 먼저 확인할 것
 
 - `docker-compose up`: 실행
-- `docker-compose down`: 종료 / `Ctrl + C`: 정지 
+- `docker-compose down`: 종료 / `Ctrl + C`: 정지
+
+## 9. TypeORM 사용해보기
+
+- [공식문서](https://docs.nestjs.com/techniques/database)
+
+### 설정하기
+
+설정은 크게 두가지 과정을 거쳐야 한다.
+
+1. 패키지 설치 및 선언
+2. Repository 주입
+
+```shell
+yarn add @nestjs/typeorm typeorm [데이터베이스]
+# npm install --save @nestjs/typeorm typeorm [데이터베이스]
+```
+
+```typescript
+// app.module.ts
+imports: [
+  // 환경변수로 수정할 수 있다
+  TypeOrmModule.forRoot({
+    type: '데이터베이스',
+    host: '서버주소',
+    port: 포트,
+    username: '사용자명',
+    password: '비밀번호',
+    database: '데이터베이스 이름',
+    entities: [],
+    synchronize: true,
+    logging: true,
+  }),
+]
+```
+
+> synchronize: true 해당 옵션은 주의를 요한다. 개발환경에서는 true로 하는 것이 편리하지만, 프로덕션 환경에서는
+> 의도치 않은 변화가 발생할 수 있기때문에 false를 사용한다.
+
+모든 테이블에는 절대적으로 유일무이한 1개의 컬럼(column)이 있어야 한다.
+
+2. 리포지토리(Repository) 주입하기
+
+리포지토리는 엔티티(클래스로 작성된 테이블)와 연결해 주는 징검다리 역할을 한다.
+
+- `TypeOrmModule.forRoot`: TypeORM 패키지 자체를 연결한다.
+- `TypeOrmModule.forFeature()`: 레포지토리를 주입한다.
+
+### 개선
+
+메모리 데이터베이스 환경에서 실제 데이터베이스로 이전한다.
+
+> repository의 함수는 모두 비동기다. 따라서 비동기 함수로 선언한다.
+
+- find(): 다수의 데이터 조회하기(전체)
+- findOne(): 단건조회
+- create(): 저장 할 객체를 생성한다. (객체만 생성하기 때문에 동기)
+- save()
+    - 데이터가 존재하지 않는다면 새로 생성
+    - 데이터가 이미 있다면 덮어 씌움
+- delete(): 데이터 삭제
