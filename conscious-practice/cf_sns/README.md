@@ -206,3 +206,12 @@ imports: [
     - 데이터가 존재하지 않는다면 새로 생성
     - 데이터가 이미 있다면 덮어 씌움
 - delete(): 데이터 삭제
+
+## 10. Typeorm 이론
+
+- 프로젝트 세팅
+
+```shell
+nest new [프로젝트 이름]
+yarn add @nestjs/typeorm typeorm pg
+```
