@@ -55,4 +55,16 @@ describe('AppController (e2e)', () => {
 
     expect(response.body.title).toEqual('수정된 제목');
   });
+
+  it('Enum Column 기본값: user', async () => {
+    // Given
+    const title: CreateUserDto = { title: '할 수 있다' };
+
+    const response = await request(app.getHttpServer())
+      .post('/users')
+      .send(title);
+    expect(response.statusCode).toEqual(HttpStatus.CREATED);
+    expect(response.body.title).toEqual('할 수 있다');
+    expect(response.body.role).toEqual('user');
+  });
 });

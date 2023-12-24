@@ -230,3 +230,24 @@ docker-compose up
 - @Column()
     - @Generated('increment'): 기본 칼럼은 아닌데 값을 증가시킴(number)
     - @Generated('uuid'): uuid로 생성(string)
+
+### Column Property
+
+타입스크립트의 타입으로 칼럼이 유추되어 자동 생성된다. 하지만 특정 값으로 명시하고 싶은 경우
+`type: 타입` 으로 데이터베이스의 타입으로 바꿀 수 있다.
+
+- type: 데이터베이스 타입
+- name: 칼럼 이름
+- length: 값의 길이(입력할 수 있는 글자의 수)
+- nullable: boolean: null 값이 가능한지 여부
+- update: boolean: true 생성 시 값 지정 이후 변경 불가능
+- select: boolean: 기본값 true / find() 조회 함수 사용시 값을 불러올 수 있는지, 원하는 값만 가져올 수 있음
+- default: 입력하지 않았을 때 기본값
+- unique: boolean: 기본값 false / 유일무이한 값이어야 하는지 여부 (회원가입 이메일에 사용)
+
+### Enum Column
+
+Enum을 사용할 수 있다.
+
+
+
