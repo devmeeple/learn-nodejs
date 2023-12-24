@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { PostsService } from './posts.service';
 import { NotFoundException } from '@nestjs/common';
-import { PostsEntity } from './entities/posts.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostsEntity } from './entities/posts.entity';
 
 describe('PostsService', () => {
   let service: PostsService;
