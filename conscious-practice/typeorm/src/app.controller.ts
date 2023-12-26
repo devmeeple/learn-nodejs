@@ -32,4 +32,19 @@ export class AppController {
   createUserAndPost(@Body() request: CreateUserDto) {
     return this.appService.createUserAndPost(request);
   }
+
+  @Get('/posts')
+  getPostList() {
+    return this.appService.getPostList();
+  }
+
+  @Post('/posts/tags')
+  createPostsTags() {
+    return this.appService.createPostsTags();
+  }
+
+  @Get('/tags')
+  getTagList() {
+    return this.appService.getTagList();
+  }
 }

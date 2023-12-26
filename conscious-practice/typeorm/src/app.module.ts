@@ -13,6 +13,7 @@ import {
 } from './entities/inheritance.entity';
 import { ProfileEntity } from './entities/profile.entity';
 import { PostEntity } from './entities/post.entity';
+import { TagEntity } from './entities/tag.entity';
 
 @Module({
   imports: [
@@ -34,11 +35,17 @@ import { PostEntity } from './entities/post.entity';
         AirplaneEntity,
         ProfileEntity,
         PostEntity,
+        TagEntity,
       ],
       synchronize: true,
       logging: true,
     }),
-    TypeOrmModule.forFeature([UserEntity, ProfileEntity, PostEntity]),
+    TypeOrmModule.forFeature([
+      UserEntity,
+      ProfileEntity,
+      PostEntity,
+      TagEntity,
+    ]),
   ],
   controllers: [AppController],
   providers: [AppService],
