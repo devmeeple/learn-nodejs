@@ -11,6 +11,7 @@ import {
   ComputerEntity,
   SingleBaseEntity,
 } from './entities/inheritance.entity';
+import { ProfileEntity } from './entities/profile.entity';
 
 @Module({
   imports: [
@@ -30,11 +31,12 @@ import {
         SingleBaseEntity,
         ComputerEntity,
         AirplaneEntity,
+        ProfileEntity,
       ],
       synchronize: true,
       logging: true,
     }),
-    TypeOrmModule.forFeature([UserEntity]),
+    TypeOrmModule.forFeature([UserEntity, ProfileEntity]),
   ],
   controllers: [AppController],
   providers: [AppService],

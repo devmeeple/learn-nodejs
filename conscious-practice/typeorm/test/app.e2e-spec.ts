@@ -20,14 +20,22 @@ describe('AppController (e2e)', () => {
     await app?.close();
   });
 
-  it('/users (GET)', () => {
-    return request(app.getHttpServer()).get('/users').expect(HttpStatus.OK);
+  it('/users (GET)', async () => {
+    const response = await request(app.getHttpServer()).get('/users');
+
+    expect(response.statusCode).toEqual(HttpStatus.OK);
+
+    // one-to-one 관계 확인 테스트 검증
+    const userWithProfileImage = response.body.find(
+      (user) => user.profile && user.profile.image === 'test.jpg',
+    );
+    expect(userWithProfileImage).toBeDefined();
   });
 
   it('/users (POST)', async () => {
     // Given
     const createRequest: CreateUserDto = {
-      title: '테스트',
+      email: 'devmeeple@gmail.com',
     };
 
     // When
@@ -36,35 +44,53 @@ describe('AppController (e2e)', () => {
       .send(createRequest);
 
     expect(response.statusCode).toEqual(HttpStatus.CREATED);
-    expect(response.body.title).toEqual('테스트');
+    expect(response.body.email).toEqual('devmeeple@gmail.com');
   });
 
   it('/users/:id (PATCH)', async () => {
-    const oldTitle = '테스트';
+    const oldEmail: string = 'devmeeple@gmail.com';
     const created = await request(app.getHttpServer()).post('/users').send({
-      title: oldTitle,
+      email: oldEmail,
     });
     expect(created.statusCode).toEqual(HttpStatus.CREATED);
     const id = created.body.id;
 
-    const newTitle = '수정된 제목';
+    const newEmail: string = 'newmeeple@gmail.com';
     const response = await request(app.getHttpServer())
       .patch(`/users/${id}`)
-      .send({ title: newTitle })
+      .send({ email: newEmail })
       .expect(HttpStatus.OK);
 
-    expect(response.body.title).toEqual('수정된 제목');
+    expect(response.body.email).toEqual('newmeeple@gmail.com');
   });
 
   it('Enum Column 기본값: user', async () => {
     // Given
-    const title: CreateUserDto = { title: '할 수 있다' };
+    const title: CreateUserDto = {
+      email: 'devmeeple@gmail.com',
+    };
 
     const response = await request(app.getHttpServer())
       .post('/users')
       .send(title);
+
     expect(response.statusCode).toEqual(HttpStatus.CREATED);
-    expect(response.body.title).toEqual('할 수 있다');
+    expect(response.body.email).toEqual('devmeeple@gmail.com');
     expect(response.body.role).toEqual('user');
+  });
+
+  it('createUserAndProfile()', async () => {
+    // Given
+    const user: CreateUserDto = {
+      email: 'devmeeple@gmail.com',
+      image: 'test.jpg',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/users/profile')
+      .send(user);
+
+    expect(response.statusCode).toEqual(HttpStatus.CREATED);
+    expect(response.body.email).toEqual('devmeeple@gmail.com');
   });
 });

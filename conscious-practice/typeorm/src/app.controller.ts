@@ -22,4 +22,9 @@ export class AppController {
   update(@Param('id') id: string, @Body() request: UpdateUserDto) {
     return this.appService.update(+id, request);
   }
+
+  @Post('/profile')
+  creteUserAndProfile(@Body() request: CreateUserDto) {
+    return this.appService.createUserAndProfile(request);
+  }
 }
