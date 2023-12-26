@@ -378,3 +378,31 @@ export class Employee {
 }
 ```
 
+### FindManyOptions
+
+[공식문서](https://orkhan.gitbook.io/typeorm/docs/find-options)
+
+- `select: {}`: SELECT 구 기본값 * 지정 시 필요한 컬럼만 가져옴
+- `where: {}`: WHERE 구 기본값 AND, `[](리스트)`로 지정시 OR 조건
+
+### 자주사용하는 메서드
+
+[공식문서: Repository APIs](https://orkhan.gitbook.io/typeorm/docs/repository-api)
+
+- create(object): 객체를 생성하고 데이터는 저장하지 않음
+- save(object): 객체 생성 및 데이터 저장
+- preload(options): 새로운 엔티티를 생성한다.
+    - 엔티티를 찾을 수 있는 식별자를 지정해야 한다.(ID/PK) 엔티티를 조회할 수 없다면 정의되지 않은 값을 반환한다.
+    - 엔티티가 데이터베이스에 이미 존재하는 경우, 관련된 모든 값을 불러오고 모든 값을 지정된 객체의 새로운 값으로 바꾼 다음 새로운 엔티티를 반환한다.
+    - 저장하지는 않는다.
+- delete(id): 데이터를 삭제한다. ID 혹은 조건에 맞는 데이터를 삭제한다.
+- increment(options): 엔티티에 해당 열값을 주어진 옵션에 따라 증가시킨다.
+- decrement(options): 엔티티에 해당 열값을 주어진 옵션에 따라 감소시킨다.
+- count(options): 필터 조건에 일치하는 엔티티가 몇개 있는지 조회한다. 페이지네이션에 유용하다.
+- sum(options): 모든 엔티티에 대한 숫자필드의 합계를 반환한다.
+- average
+- min
+- max
+- find: 데이터조회
+- findOne: 단건조회
+- findAndCount: 페이지네이션에 유용
