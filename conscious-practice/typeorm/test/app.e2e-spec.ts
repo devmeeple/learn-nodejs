@@ -29,7 +29,9 @@ describe('AppController (e2e)', () => {
     const userWithProfileImage = response.body.find(
       (user) => user.profile && user.profile.image === 'test.jpg',
     );
+
     expect(userWithProfileImage).toBeDefined();
+    // expect(response.body.posts).toBeDefined();
   });
 
   it('/users (POST)', async () => {
@@ -92,5 +94,19 @@ describe('AppController (e2e)', () => {
 
     expect(response.statusCode).toEqual(HttpStatus.CREATED);
     expect(response.body.email).toEqual('devmeeple@gmail.com');
+  });
+
+  it('createUserAndPost()', async () => {
+    // Given
+    const user: CreateUserDto = {
+      email: 'devmeeple@gmail.com',
+      title: '테스트 제목',
+    };
+
+    const response = await request(app.getHttpServer())
+      .post('/users/post')
+      .send(user);
+
+    expect(response.statusCode).toEqual(HttpStatus.CREATED);
   });
 });

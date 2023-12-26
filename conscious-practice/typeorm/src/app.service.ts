@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ProfileEntity } from './entities/profile.entity';
+import { PostEntity } from './entities/post.entity';
 
 @Injectable()
 export class AppService {
@@ -13,11 +14,13 @@ export class AppService {
     private readonly userRepository: Repository<UserEntity>,
     @InjectRepository(ProfileEntity)
     private readonly profileRepository: Repository<ProfileEntity>,
+    @InjectRepository(PostEntity)
+    private readonly postRepository: Repository<PostEntity>,
   ) {}
 
   async findAll() {
     return await this.userRepository.find({
-      relations: { profile: true },
+      relations: { profile: true, posts: true },
     });
   }
 
@@ -49,5 +52,15 @@ export class AppService {
     });
 
     return user;
+  }
+
+  async createUserAndPost(request: CreateUserDto) {
+    const user = await this.userRepository.save({
+      ...request,
+    });
+    await this.postRepository.save({
+      author: user,
+      title: request.title,
+    });
   }
 }

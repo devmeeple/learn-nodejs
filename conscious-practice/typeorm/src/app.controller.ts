@@ -27,4 +27,9 @@ export class AppController {
   creteUserAndProfile(@Body() request: CreateUserDto) {
     return this.appService.createUserAndProfile(request);
   }
+
+  @Post('/post')
+  createUserAndPost(@Body() request: CreateUserDto) {
+    return this.appService.createUserAndPost(request);
+  }
 }

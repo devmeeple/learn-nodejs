@@ -269,4 +269,112 @@ Enum을 사용할 수 있다.
 > 흔하게 관찰되는 방법은 Class Table Inheritance였다. Single Table Inheritance 같은 경우
 > 처음 알게 된 방법이다. 또한 지식 공유자는 자주 사용하는 방법은 아니라고 한다. 우선 이렇게 해결하는 방법이 있다는 사실을 명심하는 것으로 넘어가야겠다.
 
+### Relationship 이론
+
+- [자바 ORM 표준 JPA 프로그래밍 - 기본편](https://www.inflearn.com/course/ORM-JPA-Basic)
+    - 직접 참고한 강의는 아니지만 Relationship을 이해하는데 도움이 될 것 같아 추가했다.
+
+- TypeORM 환경에서 지정하는 Relationship(관계)은 SQL join 과 같다.
+- ✅ 레코드는 행(row)을 의미한다.
+
+One-to-One
+
+- 두 테이블의 1:1 관계를 의미한다
+- 예) 사용자(User)와 사용자 프로필(UserProfile): 사용자는 프로필 사진 1개만을 가질 수 있다. 각 프로필은 하나의 사용자와 연관된다.
+
+```typescript
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => UserProfile)
+  @JoinColumn()
+  profile: UserProfile;
+}
+
+@Entity()
+export class UserProfile {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => User)
+  user: User;
+}
+```
+
+One-to-Many / Many-to-One(1:1 / N:1)
+
+- 하나의 테이블이 다른 테이블의 여러 레코드와 관련될때 사용한다.
+- 사용자는 여러 게시글을 작성할 수 있다.
+- 어떤 테이블에서 바라보는지 관점에 따라 작성한다.
+
+```typescript
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToMany(() => Post, post => post.user)
+  posts: Post[];
+}
+
+@Entity()
+export class Post {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => User, user => user.posts)
+  user: User;
+}
+```
+
+Many-to-Many(N:N)
+
+- 두 테이블이 서로 많은 수의 레코드와 관련될 때 사용한다.
+- 여러 학생은 여러코스를 등록할 수 있다.
+
+```typescript
+@Entity()
+export class Student {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToMany(() => Course, course => course.students)
+  @JoinTable()
+  courses: Course[];
+}
+
+@Entity()
+export class Course {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToMany(() => Student, student => student.courses)
+  students: Student[];
+}
+```
+
+연습하기
+> 회사가 여러 직원을 가질 수 있고, 각 직원은 하나의 회사에만 속할 수 있다.
+
+```typescript
+@Entity()
+export class Company {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToMany(() => Employee, employee => employee.company)
+  employees: Employee[];
+}
+
+@Entity
+export class Employee {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Company, company => company.employees)
+  company: Company
+}
+```
 
