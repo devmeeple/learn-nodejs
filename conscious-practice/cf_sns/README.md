@@ -133,7 +133,7 @@ export class PostsModule {
         restart: always
         volumes: # 데이터 유지를 위해 매핑
           - ./프로젝트 디렉토리:/이미지 디렉토리 
-        # /postgres-data:/var/lib/postgresql/data
+        # ./postgres-data:/var/lib/postgresql/data
         ports:
           - "프로젝트 포트:이미지 포트"
         environment:
@@ -206,3 +206,203 @@ imports: [
     - 데이터가 존재하지 않는다면 새로 생성
     - 데이터가 이미 있다면 덮어 씌움
 - delete(): 데이터 삭제
+
+## 10. Typeorm 이론
+
+- 프로젝트 세팅
+
+```text
+nest new [프로젝트 이름]
+yarn add @nestjs/typeorm typeorm pg
+docker-compose up
+```
+
+### Column Decorator
+
+- **자주사용하는 요소**
+- @PrimaryGeneratedColumn(): 자동으로 ID를 증가시킨다.
+    - @PrimaryGeneratedColumn('uuid'): 유일무이한 값을 uuid 로 생성한다.
+- @PrimaryColumn(): 테이블에서 각 row를 기본으로 구분할 수 있는 컬럼을 직접 넣겠다.
+- @CreatedDateColumn(): 데이터 생성날짜와 시간이 자동으로 입력
+- @UpdatedDateColumn(): 데이터 수정날짜와 시간이 자동으로 입력
+- @VersionColumn(): 데이터가 수정 될 때마다 1씩 올라간다. 처음 생성시 값은 1
+    - save() 함수가 몇 번 호출되었는지 확인
+- @Column()
+    - @Generated('increment'): 기본 칼럼은 아닌데 값을 증가시킴(number)
+    - @Generated('uuid'): uuid로 생성(string)
+
+### Column Property
+
+타입스크립트의 타입으로 칼럼이 유추되어 자동 생성된다. 하지만 특정 값으로 명시하고 싶은 경우
+`type: 타입` 으로 데이터베이스의 타입으로 바꿀 수 있다.
+
+- type: 데이터베이스 타입
+- name: 칼럼 이름
+- length: 값의 길이(입력할 수 있는 글자의 수)
+- nullable: boolean: null 값이 가능한지 여부
+- update: boolean: true 생성 시 값 지정 이후 변경 불가능
+- select: boolean: 기본값 true / find() 조회 함수 사용시 값을 불러올 수 있는지, 원하는 값만 가져올 수 있음
+- default: 입력하지 않았을 때 기본값
+- unique: boolean: 기본값 false / 유일무이한 값이어야 하는지 여부 (회원가입 이메일에 사용)
+
+### Enum Column
+
+Enum을 사용할 수 있다.
+
+### Entity Embedding
+
+- [Embedding](https://dextto.tistory.com/225)
+- 중복되는 프로퍼티 값이 존재할 때 타입을 선언해서 중복된 값을 줄인다. (OOP를 적용해서 상속으로 풀어나가는 방법도 있다.)
+
+### Table Inheritance
+
+- [상속을 통한 테이블 중복 해결](https://orkhan.gitbook.io/typeorm/docs/entity-inheritance)
+- 클래스 상속을 사용해 데이터베이스 스키마에 매핑하는 방법이다.
+- 사용하는 방법은 일치하나 구성되는 방식은 전혀다른 2가지의 방법이 존재한다.
+    - Class Table Inheritance, Single Table Inheritance
+
+
+- Single Table Inheritance
+    - 모든 클래스(부모와 자식 모두)를 하나의 테이블에 매핑한다.
+    - 한 테이블의 모든 필드가 작성되며, 추가적인 칼럼을 통해 각 행(row)이 어떤 클래스 타입인지 식별한다.
+
+> 흔하게 관찰되는 방법은 Class Table Inheritance였다. Single Table Inheritance 같은 경우
+> 처음 알게 된 방법이다. 또한 지식 공유자는 자주 사용하는 방법은 아니라고 한다. 우선 이렇게 해결하는 방법이 있다는 사실을 명심하는 것으로 넘어가야겠다.
+
+### Relationship 이론
+
+- [자바 ORM 표준 JPA 프로그래밍 - 기본편](https://www.inflearn.com/course/ORM-JPA-Basic)
+    - 직접 참고한 강의는 아니지만 Relationship을 이해하는데 도움이 될 것 같아 추가했다.
+
+- TypeORM 환경에서 지정하는 Relationship(관계)은 SQL join 과 같다.
+- ✅ 레코드는 행(row)을 의미한다.
+
+One-to-One
+
+- 두 테이블의 1:1 관계를 의미한다
+- 예) 사용자(User)와 사용자 프로필(UserProfile): 사용자는 프로필 사진 1개만을 가질 수 있다. 각 프로필은 하나의 사용자와 연관된다.
+
+```typescript
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => UserProfile)
+  @JoinColumn()
+  profile: UserProfile;
+}
+
+@Entity()
+export class UserProfile {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToOne(() => User)
+  user: User;
+}
+```
+
+One-to-Many / Many-to-One(1:1 / N:1)
+
+- 하나의 테이블이 다른 테이블의 여러 레코드와 관련될때 사용한다.
+- 사용자는 여러 게시글을 작성할 수 있다.
+- 어떤 테이블에서 바라보는지 관점에 따라 작성한다.
+
+```typescript
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToMany(() => Post, post => post.user)
+  posts: Post[];
+}
+
+@Entity()
+export class Post {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => User, user => user.posts)
+  user: User;
+}
+```
+
+Many-to-Many(N:N)
+
+- 두 테이블이 서로 많은 수의 레코드와 관련될 때 사용한다.
+- 여러 학생은 여러코스를 등록할 수 있다.
+
+```typescript
+@Entity()
+export class Student {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToMany(() => Course, course => course.students)
+  @JoinTable()
+  courses: Course[];
+}
+
+@Entity()
+export class Course {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToMany(() => Student, student => student.courses)
+  students: Student[];
+}
+```
+
+연습하기
+> 회사가 여러 직원을 가질 수 있고, 각 직원은 하나의 회사에만 속할 수 있다.
+
+```typescript
+@Entity()
+export class Company {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @OneToMany(() => Employee, employee => employee.company)
+  employees: Employee[];
+}
+
+@Entity
+export class Employee {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @ManyToOne(() => Company, company => company.employees)
+  company: Company
+}
+```
+
+### FindManyOptions
+
+[공식문서](https://orkhan.gitbook.io/typeorm/docs/find-options)
+
+- `select: {}`: SELECT 구 기본값 * 지정 시 필요한 컬럼만 가져옴
+- `where: {}`: WHERE 구 기본값 AND, `[](리스트)`로 지정시 OR 조건
+
+### 자주사용하는 메서드
+
+[공식문서: Repository APIs](https://orkhan.gitbook.io/typeorm/docs/repository-api)
+
+- create(object): 객체를 생성하고 데이터는 저장하지 않음
+- save(object): 객체 생성 및 데이터 저장
+- preload(options): 새로운 엔티티를 생성한다.
+    - 엔티티를 찾을 수 있는 식별자를 지정해야 한다.(ID/PK) 엔티티를 조회할 수 없다면 정의되지 않은 값을 반환한다.
+    - 엔티티가 데이터베이스에 이미 존재하는 경우, 관련된 모든 값을 불러오고 모든 값을 지정된 객체의 새로운 값으로 바꾼 다음 새로운 엔티티를 반환한다.
+    - 저장하지는 않는다.
+- delete(id): 데이터를 삭제한다. ID 혹은 조건에 맞는 데이터를 삭제한다.
+- increment(options): 엔티티에 해당 열값을 주어진 옵션에 따라 증가시킨다.
+- decrement(options): 엔티티에 해당 열값을 주어진 옵션에 따라 감소시킨다.
+- count(options): 필터 조건에 일치하는 엔티티가 몇개 있는지 조회한다. 페이지네이션에 유용하다.
+- sum(options): 모든 엔티티에 대한 숫자필드의 합계를 반환한다.
+- average
+- min
+- max
+- find: 데이터조회
+- findOne: 단건조회
+- findAndCount: 페이지네이션에 유용
