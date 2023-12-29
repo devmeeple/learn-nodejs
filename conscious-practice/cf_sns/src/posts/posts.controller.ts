@@ -16,6 +16,7 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { User } from '../users/decorator/user.decorator';
 import { PaginatePostDto } from './dto/paginate-post.dto';
+import { UsersEntity } from '../users/entities/users.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -29,6 +30,13 @@ export class PostsController {
   @Get(':id')
   findById(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.findById(id);
+  }
+
+  @UseGuards(AccessTokenGuard)
+  @Post('random')
+  async generatePostList(@User() user: UsersEntity) {
+    await this.postsService.generatePostList(user.id);
+    return true;
   }
 
   @UseGuards(AccessTokenGuard)
