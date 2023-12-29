@@ -3,6 +3,10 @@ import { AppController } from './app.controller';
 import { PostsModule } from './posts/posts.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsEntity } from './posts/entities/posts.entity';
+import { UsersModule } from './users/users.module';
+import { UsersEntity } from './users/entities/users.entity';
+import { AuthModule } from './auth/auth.module';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -14,11 +18,14 @@ import { PostsEntity } from './posts/entities/posts.entity';
       username: 'postgres',
       password: 'postgres',
       database: 'postgres',
-      entities: [PostsEntity],
+      entities: [PostsEntity, UsersEntity],
       synchronize: true, // 개발환경에서는 true로 하는게 좋지만, 프로덕션 환경에서는 의도치 않은 변화가 발생할 수 있기 때문에 false
       logging: true,
     }),
     PostsModule,
+    UsersModule,
+    AuthModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [],

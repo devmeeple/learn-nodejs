@@ -13,7 +13,9 @@ export class PostsService {
   ) {}
 
   async findAll(): Promise<PostsEntity[]> {
-    return await this.postsRepository.find();
+    return await this.postsRepository.find({
+      relations: ['author'],
+    });
   }
 
   async findById(id: number) {
@@ -21,24 +23,37 @@ export class PostsService {
       where: {
         id,
       },
+      relations: ['author'],
     });
 
     if (!post) {
-      throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
+      throw new NotFoundException('게시글을 찾을 수 없습니다.');
     }
 
     return post;
   }
 
-  async create(request: CreatePostDto): Promise<PostsEntity> {
-    const post = this.postsRepository.create(request);
+  async create(authorId: number, createPostDto: CreatePostDto) {
+    const post = this.postsRepository.create({
+      author: {
+        id: authorId,
+      },
+      ...createPostDto,
+      likeCount: 0,
+      commentCount: 0,
+    });
+
     return await this.postsRepository.save(post);
   }
 
-  async update(id: number, request: UpdatePostDto): Promise<PostsEntity> {
-    let post = await this.postsRepository.findOne({
+  async update(
+    postId: number,
+    updatePostDto: UpdatePostDto,
+  ): Promise<PostsEntity> {
+    const { title, content } = updatePostDto;
+    const post = await this.postsRepository.findOne({
       where: {
-        id,
+        id: postId,
       },
     });
 
@@ -46,7 +61,13 @@ export class PostsService {
       throw new NotFoundException('해당 게시글을 찾을 수 없습니다.');
     }
 
-    post = { ...post, ...request };
+    if (title) {
+      post.title = title;
+    }
+
+    if (content) {
+      post.content = content;
+    }
 
     return await this.postsRepository.save(post);
   }
