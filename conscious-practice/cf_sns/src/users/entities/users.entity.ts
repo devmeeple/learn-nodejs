@@ -6,6 +6,7 @@ import { BaseEntity } from '../../common/entities/base.entity';
 import { lengthValidationMessage } from '../../common/validation-message/length-validation.message';
 import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
 import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
+import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class UsersEntity extends BaseEntity {
@@ -29,6 +30,13 @@ export class UsersEntity extends BaseEntity {
   })
   email: string;
 
+  /**
+   * REQUEST FE -> BE: plain text(JSON) -> class instance(dto)
+   * RESPONSE BE -> FE: class instance(dto) -> plain text(JSON)
+   */
+  @Exclude({
+    toPlainOnly: true,
+  })
   @Length(3, 8, {
     message: lengthValidationMessage,
   })
