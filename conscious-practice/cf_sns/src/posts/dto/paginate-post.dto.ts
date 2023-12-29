@@ -8,11 +8,15 @@ import { IsIn, IsNumber, IsOptional } from 'class-validator';
 export class PaginatePostDto {
   @IsOptional()
   @IsNumber()
+  where__id_less_than?: number;
+
+  @IsOptional()
+  @IsNumber()
   where__id_more_than?: number;
 
-  @IsIn(['ASC'])
+  @IsIn(['ASC', 'DESC'])
   @IsOptional()
-  order__createdAt? = 'ASC' as const;
+  order__createdAt: 'ASC' | 'DESC' = 'ASC';
 
   @IsOptional()
   @IsNumber()
