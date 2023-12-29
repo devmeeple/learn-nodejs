@@ -35,6 +35,18 @@ export class PostsService {
     return { data: postList };
   }
 
+  /**
+   * 페이지네이션을 테스트 하는 테스트 함수
+   */
+  async generatePostList(userId: number) {
+    for (let i = 0; i < 100; i++) {
+      await this.create(userId, {
+        title: `테스트 제목${i}`,
+        content: `테스트 내용${i}`,
+      });
+    }
+  }
+
   async findById(id: number) {
     const post = await this.postsRepository.findOne({
       where: {
