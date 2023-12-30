@@ -14,3 +14,8 @@ export const POST_PUBLIC_IMAGE_PATH = join(
   PUBLIC_FOLDER_NAME,
   POSTS_FOLDER_NAME,
 );
+
+// 임시 폴더 이름
+export const TEMP_FOLDER_NAME = 'temp';
+// 임시 파일 저장 폴더
+export const TEMP_FOLDER_PATH = join(PUBLIC_FOLDER_PATH, TEMP_FOLDER_NAME);
