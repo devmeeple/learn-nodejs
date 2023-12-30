@@ -14,6 +14,11 @@ export class PaginatePostDto {
   @IsNumber()
   where__id_more_than?: number;
 
+  // page pagination
+  @IsNumber()
+  @IsOptional()
+  page?: number;
+
   @IsIn(['ASC', 'DESC'])
   @IsOptional()
   order__createdAt: 'ASC' | 'DESC' = 'ASC';
