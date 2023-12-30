@@ -1,16 +1,21 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersEntity } from '../users/entities/users.entity';
-import { HASH_ROUNDS, JWT_SECRET } from './const/auth.const';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { RegisterUserDto } from './dto/register-user.dto';
+import { ConfigService } from '@nestjs/config';
+import {
+  ENV_HASH_ROUND_KEY,
+  ENV_JWT_SECRET_KEY,
+} from '../common/const/env-keys.const';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
+    private readonly configService: ConfigService,
   ) {}
 
   /**
@@ -63,7 +68,7 @@ export class AuthService {
   verifyToken(token: string) {
     try {
       return this.jwtService.verify(token, {
-        secret: JWT_SECRET,
+        secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
       });
     } catch (e) {
       throw new UnauthorizedException('토큰이 만료되었거나 잘못된 토큰입니다');
@@ -72,7 +77,7 @@ export class AuthService {
 
   rotateToken(token: string, isRefreshToken: boolean) {
     const decoded = this.jwtService.verify(token, {
-      secret: JWT_SECRET,
+      secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
     });
 
     if (decoded.type !== 'refresh') {
@@ -90,7 +95,10 @@ export class AuthService {
    * accessToken, refreshToken 반환(회원 가입 후 바로 로그인 하기 위함)
    */
   async registerWithEmail(user: RegisterUserDto) {
-    const hash = await bcrypt.hash(user.password, HASH_ROUNDS);
+    const hash = await bcrypt.hash(
+      user.password,
+      parseInt(this.configService.get<string>(ENV_HASH_ROUND_KEY)),
+    );
     const createdUser = await this.usersService.createUser({
       ...user,
       password: hash,
@@ -136,7 +144,7 @@ export class AuthService {
     };
 
     return this.jwtService.sign(payload, {
-      secret: JWT_SECRET,
+      secret: this.configService.get<string>(ENV_JWT_SECRET_KEY),
       expiresIn: isRefreshToken ? 3600 : 300,
     });
   }
