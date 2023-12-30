@@ -23,6 +23,12 @@ export class PostsEntity extends BaseEntity {
   @Column()
   content: string;
 
+  // 데이터베이스에 이미지를 저장할 때 직접 저장하는 것은 리소스 소모가 너무 크다. 따라서 파일위치를 저장한다.
+  @Column({
+    nullable: true,
+  })
+  image?: string;
+
   @Column()
   likeCount: number;
 
