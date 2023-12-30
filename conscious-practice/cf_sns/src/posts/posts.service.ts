@@ -20,10 +20,40 @@ export class PostsService {
     });
   }
 
-  /**
-   * 오름차순으로 정렬하는 페이지네이션
-   */
   async paginate(pageRequest: PaginatePostDto) {
+    if (pageRequest.page) {
+      return this.pagePaginate(pageRequest);
+    } else {
+      return this.cursorPaginate(pageRequest);
+    }
+  }
+
+  /**
+   * 페이지 기반 페이지 네이션
+   * data: Data[]
+   * total: number
+   * @param pageRequest
+   */
+  async pagePaginate(pageRequest: PaginatePostDto) {
+    // SELECT * FROM post ORDER BY post.createdAt = ASC LIMIT [take] OFFSET [skip];
+    const [postList, count] = await this.postsRepository.findAndCount({
+      order: {
+        createdAt: pageRequest.order__createdAt,
+      },
+      take: pageRequest.take,
+      skip: pageRequest.take * (pageRequest.page - 1),
+    });
+
+    return {
+      data: postList,
+      total: count,
+    };
+  }
+
+  /**
+   * 오름차순으로 정렬하는 페이지네이션 커서기반
+   */
+  async cursorPaginate(pageRequest: PaginatePostDto) {
     const where: FindOptionsWhere<PostsEntity> = {};
     if (pageRequest.where__id_less_than) {
       where.id = LessThan(pageRequest.where__id_less_than);
