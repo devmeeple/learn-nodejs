@@ -142,12 +142,13 @@ export class PostsService {
     return post;
   }
 
-  async create(authorId: number, createPostDto: CreatePostDto) {
+  async create(authorId: number, createPostDto: CreatePostDto, image?: string) {
     const post = this.postsRepository.create({
       author: {
         id: authorId,
       },
       ...createPostDto,
+      image,
       likeCount: 0,
       commentCount: 0,
     });
