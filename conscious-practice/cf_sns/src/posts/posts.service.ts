@@ -6,12 +6,14 @@ import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsEntity } from './entities/posts.entity';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 import { HOST, PROTOCOL } from '../common/const/env.const';
+import { CommonService } from '../common/common.service';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsEntity)
     private readonly postsRepository: Repository<PostsEntity>,
+    private readonly commonService: CommonService,
   ) {}
 
   async findAll(): Promise<PostsEntity[]> {
@@ -21,11 +23,12 @@ export class PostsService {
   }
 
   async paginate(pageRequest: PaginatePostDto) {
-    if (pageRequest.page) {
-      return this.pagePaginate(pageRequest);
-    } else {
-      return this.cursorPaginate(pageRequest);
-    }
+    return this.commonService.paginate(
+      pageRequest,
+      this.postsRepository,
+      { relations: ['author'] },
+      'posts',
+    );
   }
 
   /**
@@ -55,16 +58,16 @@ export class PostsService {
    */
   async cursorPaginate(pageRequest: PaginatePostDto) {
     const where: FindOptionsWhere<PostsEntity> = {};
-    if (pageRequest.where__id_less_than) {
-      where.id = LessThan(pageRequest.where__id_less_than);
-    } else if (pageRequest.where__id_more_than) {
-      where.id = MoreThan(pageRequest.where__id_more_than);
+    if (pageRequest.where__id__less_than) {
+      where.id = LessThan(pageRequest.where__id__less_than);
+    } else if (pageRequest.where__id__more_than) {
+      where.id = MoreThan(pageRequest.where__id__more_than);
     }
 
     const postList = await this.postsRepository.find({
       where: {
         // ID 값이 정의되지 않았을 때 nullish 연산자를 사용해서 0으로 할당
-        id: MoreThan(pageRequest.where__id_more_than ?? 0),
+        id: MoreThan(pageRequest.where__id__more_than ?? 0),
       },
       order: { createdAt: pageRequest.order__createdAt },
       take: pageRequest.take,

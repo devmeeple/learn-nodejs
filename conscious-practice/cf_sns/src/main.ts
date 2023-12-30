@@ -12,6 +12,10 @@ async function bootstrap() {
       transformOptions: {
         enableImplicitConversion: true, // 암묵적으로 형 변환
       },
+      // validation 적용되지 않은 데코레이터 삭제(보안)
+      whitelist: true,
+      // 허가되지 않은 프로퍼티에 접근 시 에러표시
+      forbidNonWhitelisted: true,
     }),
   );
   await app.listen(3000);
