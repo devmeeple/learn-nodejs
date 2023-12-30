@@ -3,6 +3,9 @@ import { UsersEntity } from '../../users/entities/users.entity';
 import { IsString } from 'class-validator';
 import { BaseEntity } from '../../common/entities/base.entity';
 import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
+import { Transform } from 'class-transformer';
+import { join } from 'path';
+import { POST_PUBLIC_IMAGE_PATH } from '../../common/const/path.const';
 
 @Entity('posts')
 export class PostsEntity extends BaseEntity {
@@ -27,6 +30,7 @@ export class PostsEntity extends BaseEntity {
   @Column({
     nullable: true,
   })
+  @Transform(({ value }) => value && `/${join(POST_PUBLIC_IMAGE_PATH, value)}`)
   image?: string;
 
   @Column()
