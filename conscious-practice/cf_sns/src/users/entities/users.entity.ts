@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, OneToMany } from 'typeorm';
 import { RolesEnum } from '../const/roles.const';
 import { PostsEntity } from '../../posts/entities/posts.entity';
 import { IsEmail, IsString, Length } from 'class-validator';
@@ -7,6 +7,8 @@ import { lengthValidationMessage } from '../../common/validation-message/length-
 import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
 import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
 import { Exclude } from 'class-transformer';
+import { ChatsEntity } from '../../chats/entities/chats.entity';
+import { MessagesEntity } from '../../chats/messages/entities/messages.entity';
 
 @Entity('users')
 export class UsersEntity extends BaseEntity {
@@ -54,4 +56,11 @@ export class UsersEntity extends BaseEntity {
 
   @OneToMany(() => PostsEntity, (post) => post.author)
   posts: PostsEntity[];
+
+  @ManyToMany(() => ChatsEntity, (chat) => chat.users)
+  @JoinTable()
+  chats: ChatsEntity[];
+
+  @OneToMany(() => MessagesEntity, (message) => message.author)
+  messages: MessagesEntity;
 }
