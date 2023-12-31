@@ -3,13 +3,13 @@ import {
   Controller,
   Delete,
   Get,
-  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
@@ -18,9 +18,12 @@ import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { User } from '../users/decorator/user.decorator';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 import { UsersEntity } from '../users/entities/users.entity';
-import { ImageEntityType } from '../common/entities/image.entity';
-import { DataSource } from 'typeorm';
+import { DataSource, QueryRunner as QR } from 'typeorm';
 import { PostImagesService } from './image/images.service';
+import { LogInterceptor } from '../common/interceptor/log.interceptor';
+import { TransactionInterceptor } from '../common/interceptor/transaction.interceptor';
+import { QueryRunner } from '../common/decorator/query-runner.decorator';
+import { ImageEntityType } from '../common/entities/image.entity';
 
 @Controller('posts')
 export class PostsController {
@@ -31,6 +34,7 @@ export class PostsController {
   ) {}
 
   @Get()
+  @UseInterceptors(LogInterceptor)
   findAll(@Query() query: PaginatePostDto) {
     return this.postsService.cursorPaginate(query);
   }
@@ -47,37 +51,28 @@ export class PostsController {
     return true;
   }
 
+  @UseInterceptors(TransactionInterceptor)
   @UseGuards(AccessTokenGuard)
   @Post()
   async create(
-    @User('id') userId: number,
+    @QueryRunner() qr: QR,
+    @User('id')
+    userId: number,
     @Body() createPostDto: CreatePostDto,
   ) {
-    const qr = this.dataSource.createQueryRunner();
-    await qr.connect();
-    await qr.startTransaction();
-    try {
-      const post = await this.postsService.create(userId, createPostDto, qr);
-      for (let i = 0; i < createPostDto.images.length; i++) {
-        await this.postImagesService.createPostImage(
-          {
-            post,
-            order: i,
-            path: createPostDto.images[i],
-            type: ImageEntityType.POST_IMAGE,
-          },
-          qr,
-        );
-      }
-      await qr.commitTransaction();
-      await qr.release();
-      return this.postsService.findById(post.id);
-    } catch (e) {
-      await qr.rollbackTransaction();
-      await qr.release();
-
-      throw new InternalServerErrorException('잘못된 접근입니다');
+    const post = await this.postsService.create(userId, createPostDto, qr);
+    for (let i = 0; i < createPostDto.images.length; i++) {
+      await this.postImagesService.createPostImage(
+        {
+          post,
+          order: i,
+          path: createPostDto.images[i],
+          type: ImageEntityType.POST_IMAGE,
+        },
+        qr,
+      );
     }
+    return this.postsService.findById(post.id, qr);
   }
 
   @Patch(':id')

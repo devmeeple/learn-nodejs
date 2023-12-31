@@ -136,8 +136,9 @@ export class PostsService {
     }
   }
 
-  async findById(id: number) {
-    const post = await this.postsRepository.findOne({
+  async findById(id: number, qr?: QueryRunner) {
+    const repository = this.getRepository(qr);
+    const post = await repository.findOne({
       ...DEFAULT_POST_FIND_OPTIONS,
       where: {
         id,
