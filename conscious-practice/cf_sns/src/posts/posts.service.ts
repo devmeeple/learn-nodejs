@@ -1,10 +1,12 @@
-import {
-  BadRequestException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
-import { FindOptionsWhere, LessThan, MoreThan, Repository } from 'typeorm';
+import {
+  FindOptionsWhere,
+  LessThan,
+  MoreThan,
+  QueryRunner,
+  Repository,
+} from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UpdatePostDto } from './dto/update-post.dto';
 import { PostsEntity } from './entities/posts.entity';
@@ -12,34 +14,29 @@ import { PaginatePostDto } from './dto/paginate-post.dto';
 import { CommonService } from '../common/common.service';
 import { ENV_HOST_KEY, ENV_PROTOCOL_KEY } from '../common/const/env-keys.const';
 import { ConfigService } from '@nestjs/config';
-import { basename, join } from 'path';
-import {
-  POST_IMAGE_PATH,
-  PUBLIC_FOLDER_PATH,
-  TEMP_FOLDER_PATH,
-} from '../common/const/path.const';
-import { promises } from 'fs';
+import { ImageEntity } from '../common/entities/image.entity';
+import { DEFAULT_POST_FIND_OPTIONS } from './const/default-post-find-options.const';
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(PostsEntity)
     private readonly postsRepository: Repository<PostsEntity>,
+    @InjectRepository(ImageEntity)
+    private readonly imageRepository: Repository<ImageEntity>,
     private readonly configService: ConfigService,
     private readonly commonService: CommonService,
   ) {}
 
   async findAll(): Promise<PostsEntity[]> {
-    return await this.postsRepository.find({
-      relations: ['author'],
-    });
+    return await this.postsRepository.find({ ...DEFAULT_POST_FIND_OPTIONS });
   }
 
   async paginate(pageRequest: PaginatePostDto) {
     return this.commonService.paginate(
       pageRequest,
       this.postsRepository,
-      { relations: ['author'] },
+      { ...DEFAULT_POST_FIND_OPTIONS },
       'posts',
     );
   }
@@ -134,16 +131,17 @@ export class PostsService {
       await this.create(userId, {
         title: `테스트 제목${i}`,
         content: `테스트 내용${i}`,
+        images: [],
       });
     }
   }
 
   async findById(id: number) {
     const post = await this.postsRepository.findOne({
+      ...DEFAULT_POST_FIND_OPTIONS,
       where: {
         id,
       },
-      relations: ['author'],
     });
 
     if (!post) {
@@ -153,37 +151,29 @@ export class PostsService {
     return post;
   }
 
-  async create(authorId: number, createPostDto: CreatePostDto) {
-    const post = this.postsRepository.create({
+  getRepository(qr?: QueryRunner) {
+    return qr
+      ? qr.manager.getRepository<PostsEntity>(PostsEntity)
+      : this.postsRepository;
+  }
+
+  async create(
+    authorId: number,
+    createPostDto: CreatePostDto,
+    qr?: QueryRunner,
+  ) {
+    const repository = this.getRepository(qr);
+    const post = repository.create({
       author: {
         id: authorId,
       },
       ...createPostDto,
+      images: [],
       likeCount: 0,
       commentCount: 0,
     });
 
-    return await this.postsRepository.save(post);
-  }
-
-  async createImage(createPostDto: CreatePostDto) {
-    const tempFilePath = join(TEMP_FOLDER_PATH, createPostDto.image);
-
-    try {
-      // 파일 존재여부 확인 존재하지 않으면 에러 반환
-      await promises.access(tempFilePath);
-    } catch (e) {
-      throw new BadRequestException('존재하지 않는 파일 입니다');
-    }
-
-    // 파일 이름만 가져오기
-    const filename = basename(tempFilePath);
-    const newPath = join(POST_IMAGE_PATH, filename);
-
-    // 파일 옮기기
-    await promises.rename(tempFilePath, newPath);
-
-    return true;
+    return await repository.save(post);
   }
 
   async update(
