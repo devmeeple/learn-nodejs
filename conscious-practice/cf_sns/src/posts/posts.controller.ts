@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  InternalServerErrorException,
   Param,
   ParseIntPipe,
   Patch,
@@ -17,10 +18,17 @@ import { AccessTokenGuard } from '../auth/guard/bearer-token.guard';
 import { User } from '../users/decorator/user.decorator';
 import { PaginatePostDto } from './dto/paginate-post.dto';
 import { UsersEntity } from '../users/entities/users.entity';
+import { ImageEntityType } from '../common/entities/image.entity';
+import { DataSource } from 'typeorm';
+import { PostImagesService } from './image/images.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly postImagesService: PostImagesService,
+    private readonly dataSource: DataSource,
+  ) {}
 
   @Get()
   findAll(@Query() query: PaginatePostDto) {
@@ -45,8 +53,31 @@ export class PostsController {
     @User('id') userId: number,
     @Body() createPostDto: CreatePostDto,
   ) {
-    await this.postsService.createImage(createPostDto);
-    return this.postsService.create(userId, createPostDto);
+    const qr = this.dataSource.createQueryRunner();
+    await qr.connect();
+    await qr.startTransaction();
+    try {
+      const post = await this.postsService.create(userId, createPostDto, qr);
+      for (let i = 0; i < createPostDto.images.length; i++) {
+        await this.postImagesService.createPostImage(
+          {
+            post,
+            order: i,
+            path: createPostDto.images[i],
+            type: ImageEntityType.POST_IMAGE,
+          },
+          qr,
+        );
+      }
+      await qr.commitTransaction();
+      await qr.release();
+      return this.postsService.findById(post.id);
+    } catch (e) {
+      await qr.rollbackTransaction();
+      await qr.release();
+
+      throw new InternalServerErrorException('잘못된 접근입니다');
+    }
   }
 
   @Patch(':id')

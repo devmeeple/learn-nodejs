@@ -19,6 +19,7 @@ import {
 } from './common/const/env-keys.const';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
+import { ImageEntity } from './common/entities/image.entity';
 
 @Module({
   imports: [
@@ -34,7 +35,7 @@ import { PUBLIC_FOLDER_PATH } from './common/const/path.const';
       username: process.env[ENV_DB_USERNAME_KEY],
       password: process.env[ENV_DB_PASSWORD_KEY],
       database: process.env[ENV_DB_DATABASE_KEY],
-      entities: [PostsEntity, UsersEntity],
+      entities: [PostsEntity, UsersEntity, ImageEntity],
       synchronize: true, // 개발환경에서는 true 하는 게 편리함 / 프로덕션 환경에서는 의도치 않은 변화가 발생할 수 있기 때문에 false
       logging: true,
     }),
