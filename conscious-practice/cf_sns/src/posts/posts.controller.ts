@@ -35,6 +35,7 @@ export class PostsController {
 
   @Get()
   @UseInterceptors(LogInterceptor)
+  // @UseFilters(HttpExceptionFilter)
   findAll(@Query() query: PaginatePostDto) {
     return this.postsService.cursorPaginate(query);
   }
