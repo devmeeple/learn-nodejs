@@ -1,0 +1,14 @@
+{
+  "name": "next-step",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev": "tsnd --respawn src/app.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.16",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.3.3"
+  }
+}
