@@ -1,10 +1,12 @@
-import {Controller, Delete, Get, Param, Patch, Post} from '@nestjs/common';
-import {InjectRepository} from '@nestjs/typeorm';
-import {Role, UserModel} from './entity/user.entity';
+import { Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Role, UserModel } from './entity/user.entity';
 import {
   Between,
   Equal,
-  ILike, In, IsNull,
+  ILike,
+  In,
+  IsNull,
   LessThan,
   LessThanOrEqual,
   Like,
@@ -13,23 +15,22 @@ import {
   Not,
   Repository,
 } from 'typeorm';
-import {ProfileModel} from './entity/profile.entity';
-import {PostModel} from './entity/post.entity';
-import {TagModel} from './entity/tag.entity';
+import { ProfileModel } from './entity/profile.entity';
+import { PostModel } from './entity/post.entity';
+import { TagModel } from './entity/tag.entity';
 
 @Controller()
 export class AppController {
   constructor(
-      @InjectRepository(UserModel)
-      private readonly userRepository: Repository<UserModel>,
-      @InjectRepository(ProfileModel)
-      private readonly  profileRepository: Repository<ProfileModel>,
-      @InjectRepository(PostModel)
-      private readonly  postRepository: Repository<PostModel>,
-      @InjectRepository(TagModel)
-      private readonly  tagRepository: Repository<TagModel>,
-  ) {
-  }
+    @InjectRepository(UserModel)
+    private readonly userRepository: Repository<UserModel>,
+    @InjectRepository(ProfileModel)
+    private readonly profileRepository: Repository<ProfileModel>,
+    @InjectRepository(PostModel)
+    private readonly postRepository: Repository<PostModel>,
+    @InjectRepository(TagModel)
+    private readonly tagRepository: Repository<TagModel>,
+  ) {}
 
   @Post('sample')
   async sample() {
@@ -179,13 +180,11 @@ export class AppController {
   }
 
   @Patch('users/:id')
-  async patchUsers(
-      @Param('id') id: string,
-  ) {
+  async patchUsers(@Param('id') id: string) {
     const user = await this.userRepository.findOne({
-      where:{
+      where: {
         id: parseInt(id),
-      }
+      },
     });
 
     return this.userRepository.save({
@@ -205,7 +204,7 @@ export class AppController {
       email: 'asdf@meeple.com',
       profile: {
         profileImg: 'asdf.jpg',
-      }
+      },
     });
 
     // const profile = await this.profileRepository.save({
@@ -266,9 +265,9 @@ export class AppController {
   @Get('posts')
   getPosts() {
     return this.postRepository.find({
-      relations:{
+      relations: {
         tags: true,
-      }
+      },
     });
   }
 

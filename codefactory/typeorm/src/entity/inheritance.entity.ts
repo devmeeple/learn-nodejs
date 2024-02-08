@@ -1,62 +1,62 @@
 import {
-    ChildEntity,
-    Column,
-    CreateDateColumn,
-    Entity,
-    PrimaryGeneratedColumn,
-    TableInheritance,
-    UpdateDateColumn,
+  ChildEntity,
+  Column,
+  CreateDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  TableInheritance,
+  UpdateDateColumn,
 } from 'typeorm';
 
 export class BaseModel {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
 
 @Entity()
-export class BookModel extends BaseModel{
-    @Column()
-    name: string;
+export class BookModel extends BaseModel {
+  @Column()
+  name: string;
 }
 
 @Entity()
 export class CarModel extends BaseModel {
-    @Column()
-    brand: string;
+  @Column()
+  brand: string;
 }
 
 @Entity()
 @TableInheritance({
-    column:{
-        name: 'type',
-        type: 'varchar',
-    }
+  column: {
+    name: 'type',
+    type: 'varchar',
+  },
 })
 export class SingleBaseModel {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @CreateDateColumn()
+  createdAt: Date;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
 
 @ChildEntity()
 export class ComputerModel extends SingleBaseModel {
-    @Column()
-    brand: string;
+  @Column()
+  brand: string;
 }
 
 @ChildEntity()
 export class AirplaneModel extends SingleBaseModel {
-    @Column()
-    country: string;
+  @Column()
+  country: string;
 }

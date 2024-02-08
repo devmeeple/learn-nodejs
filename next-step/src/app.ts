@@ -1,14 +1,31 @@
-import * as http from 'node:http';
+import http from 'node:http';
 
-const hostname = 'localhost';
-const port = 3000;
+export class App {
+  private readonly server: http.Server;
+  private readonly hostname: string = 'localhost';
+  private readonly port: number = 3000;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('Hello, World!\n');
-});
 
-server.listen(port, hostname, () => {
-  console.log(`서버 ://${hostname}:${port}/`);
-});
+  constructor() {
+    this.server = http.createServer(this.requestHandler);
+  }
+
+  private requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
+    res.statusCode = 200;
+    res.setHeader('Content-Type', 'text/plain');
+    res.end('Hello, World!\n');
+  }
+
+  /**
+   * HTTP 서버 연결 수신을 대기하도록 지원
+   */
+  listen() {
+    this.server.listen(this.port, this.hostname, () => {
+      console.log(`서버 실행://${this.hostname}:${this.port}/`);
+    });
+  }
+
+  getServer() {
+    return this.server;
+  }
+}

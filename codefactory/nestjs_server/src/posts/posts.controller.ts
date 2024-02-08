@@ -1,10 +1,19 @@
-import {Body, Controller, DefaultValuePipe, Delete, Get, Param, ParseIntPipe, Post, Put} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  DefaultValuePipe,
+  Delete,
+  Get,
+  Param,
+  ParseIntPipe,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 @Controller('posts')
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {
-  }
+  constructor(private readonly postsService: PostsService) {}
 
   /**
    * 1) GET /posts
@@ -38,26 +47,24 @@ export class PostsController {
 
   @Post()
   postPosts(
-      @Body('authorId') authorId: number,
-      @Body('title') title: string,
-      @Body('content') content: string
+    @Body('authorId') authorId: number,
+    @Body('title') title: string,
+    @Body('content') content: string,
   ) {
     return this.postsService.createPost(authorId, title, content);
   }
 
   @Put(':id')
   putPost(
-      @Param('id', ParseIntPipe) id: number,
-      @Body('title') title?: string,
-      @Body('content') content?: string
+    @Param('id', ParseIntPipe) id: number,
+    @Body('title') title?: string,
+    @Body('content') content?: string,
   ) {
     return this.postsService.updatePost(id, title, content);
   }
 
   @Delete(':id')
-  deletePost(
-      @Param('id', ParseIntPipe) id: number
-  ) {
+  deletePost(@Param('id', ParseIntPipe) id: number) {
     return this.postsService.deletePost(id);
   }
 }

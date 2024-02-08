@@ -1,35 +1,33 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 export class Name {
-    @Column()
-    first: string;
+  @Column()
+  first: string;
 
-    @Column()
-    last: string;
+  @Column()
+  last: string;
 }
 
 @Entity()
 export class StudentModel {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column(() => Name)
+  name: Name;
 
-    @Column(() => Name)
-    name: Name;
-
-    @Column()
-    class: string;
-
+  @Column()
+  class: string;
 }
+
 @Entity()
 export class TeacherModel {
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @PrimaryGeneratedColumn()
-    id: number;
+  @Column(() => Name)
+  name: Name;
 
-    @Column(() => Name)
-    name: Name;
-
-    @Column()
-    salary: number;
+  @Column()
+  salary: number;
 }

@@ -1,8 +1,22 @@
-import {Body, Controller, Headers, Post, UseGuards, Request} from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Headers,
+  Post,
+  UseGuards,
+  Request,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import {MaxLengthPipe, MinLengthPipe, PasswordPipe} from './pipe/password.pipe';
-import {BasicTokenGuard} from './guard/basic-token.guard';
-import {AccessTokenGuard, RefreshTokenGuard} from './guard/bearer-token.guard';
+import {
+  MaxLengthPipe,
+  MinLengthPipe,
+  PasswordPipe,
+} from './pipe/password.pipe';
+import { BasicTokenGuard } from './guard/basic-token.guard';
+import {
+  AccessTokenGuard,
+  RefreshTokenGuard,
+} from './guard/bearer-token.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -40,9 +54,7 @@ export class AuthController {
 
   @Post('login/email')
   @UseGuards(BasicTokenGuard)
-  postLoginEmail(
-      @Headers('authorization') rawToken: string,
-  ) {
+  postLoginEmail(@Headers('authorization') rawToken: string) {
     // email:password -> base64
     // 암호화 -> email:password
     const token = this.authService.extractTokenFromHeader(rawToken, false);
@@ -54,9 +66,10 @@ export class AuthController {
 
   @Post('register/email')
   postRegisterEmail(
-      @Body('nickname') nickname: string,
-      @Body('email') email: string,
-      @Body('password', new MaxLengthPipe(8, '비밀번호'), new MinLengthPipe(3)) password: string,
+    @Body('nickname') nickname: string,
+    @Body('email') email: string,
+    @Body('password', new MaxLengthPipe(8, '비밀번호'), new MinLengthPipe(3))
+    password: string,
   ) {
     return this.authService.registerWithEmail({
       nickname,
