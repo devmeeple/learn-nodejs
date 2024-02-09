@@ -4,6 +4,16 @@
 
 ## 요구사항 0 - 개발환경 구성
 
+### 요청과 응답
+
+시작에 앞서 요청을 보내는 클라이언트와 요청에 응답하는 서버의 관계를 이해해야 한다. 클라이언트는 요청(Request)을 보내고 서버는 요청을 처리하고 응답(Response) 하는 관계를 가진다.
+예를들어 웹 프로그래밍에서 브라우저는 서버에게 로그인을 요청한다. 서버는 요청을 처리하고 클라이언트에게 사용자 정보를 응답한다.
+이때 서로 소통하기 위해 HTTP(Hyper Text Transfer Protocol)를 사용한다.
+
+> 현실로 비유하자면 음식 주문과 같다. 음식을 요청하는 고객과 음식을 응답하는 점원, 돈은 HTTP와 같은 역할을 한다.
+
+### 스트림, 프로세스
+
 ### 필수 패키지
 
 * ts-node-dev VS nodemon
@@ -29,7 +39,14 @@ yarn add typescript ts-node-dev @types/node -D # 개발 종속성으로 설치
 yarn add jest ts-jest supertest @types/jest @types/supertest -D
 ```
 
+```text
+서버구현: app.ts
+서버실행: main.ts
+```
+
 ## 요구사항 1 - `index.html` 응답하기
+
+파일 모듈을 사용해서 `views` 파일에 정의된 `index.html` 파일을 확인
 
 ## 요구사항 2 - GET 방식으로 회원가입하기
 
@@ -39,3 +56,11 @@ yarn add jest ts-jest supertest @types/jest @types/supertest -D
 ## 요구사항 3 - POST 방식으로 회원가입하기
 
 form 태그 method를 get에서 post로 수정한 후 회원가입
+
+# ETC
+
+## 로깅은 왜 필요한가?
+
+로깅 라이브러리
+
+* Winston
