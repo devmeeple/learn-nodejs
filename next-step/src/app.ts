@@ -16,17 +16,14 @@ export class App {
       try {
         const filePath = path.join(__dirname, '..', 'views', 'index.html');
         const data = await fs.readFile(filePath, 'utf8');
-        res.statusCode = 200;
-        res.setHeader('Content-Type', 'text/html');
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(data);
       } catch (error) {
-        res.statusCode = 500;
-        res.setHeader('Content-Type', 'text/plain');
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.end('Internal Server Error');
       }
     } else {
-      res.statusCode = 404;
-      res.setHeader('Content-Type', 'text/plain');
+      res.writeHead(404, { 'Content-Type': 'text/plain' });
       res.end('Not Found');
     }
   }
@@ -40,7 +37,7 @@ export class App {
     });
   }
 
-  getServer() {
+  getHttpServer() {
     return this.server;
   }
 }

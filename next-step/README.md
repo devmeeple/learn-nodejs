@@ -12,11 +12,13 @@
 
 > 현실로 비유하자면 음식 주문과 같다. 음식을 요청하는 고객과 음식을 응답하는 점원, 돈은 HTTP와 같은 역할을 한다.
 
+#### ts-node-dev VS nodemon
+
+수정한 파일의 결과를 반영하기 위해서는 서버를 재동작 해야한다. (기본동작) 하지만 `ts-node-dev` 또는 `nodemon` 을 사용하면 서버의 변화를 감시하고 재시작한다.
+
 ### 스트림, 프로세스
 
 ### 필수 패키지
-
-* ts-node-dev VS nodemon
 
 ```shell
 npx tsc --init
@@ -47,6 +49,18 @@ yarn add jest ts-jest supertest @types/jest @types/supertest -D
 ## 요구사항 1 - `index.html` 응답하기
 
 파일 모듈을 사용해서 `views` 파일에 정의된 `index.html` 파일을 확인
+
+### 리팩터링
+
+코드를 간결하고 응답 처리를 명확하게 사용한다.
+
+```typescript
+// 기존 방법
+// res.statusCode = 200;
+// res.setHeader('Content-Type', 'text/plain');
+
+res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+```
 
 ## 요구사항 2 - GET 방식으로 회원가입하기
 
