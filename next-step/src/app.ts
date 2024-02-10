@@ -12,19 +12,24 @@ export class App {
   }
 
   private async requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
-    if (req.url === '/') {
-      try {
+    try {
+      if (req.url === '/') {
         const filePath = path.join(__dirname, '..', 'views', 'index.html');
         const data = await fs.readFile(filePath, 'utf8');
         res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
         res.end(data);
-      } catch (error) {
-        res.writeHead(500, { 'Content-Type': 'text/plain' });
-        res.end('Internal Server Error');
+      } else if (req.url === '/user/form') {
+        const filePath = path.join(__dirname, '..', 'views/user', 'form.html');
+        const data = await fs.readFile(filePath, 'utf8');
+        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
+        res.end(data);
+      } else {
+        res.writeHead(404, { 'Content-Type': 'text/plain' });
+        res.end('Not Found');
       }
-    } else {
-      res.writeHead(404, { 'Content-Type': 'text/plain' });
-      res.end('Not Found');
+    } catch (error) {
+      res.writeHead(500, { 'Content-Type': 'text/plain' });
+      res.end('Internal Server Error');
     }
   }
 

@@ -33,4 +33,10 @@ describe('HTTP Web Server Test', () => {
     // then
     expect(response.statusCode).toEqual(404);
   });
+
+  describe('[요구사항 2] GET 방식으로 회원 가입하기', () => {
+    it('회원가입 페이지에 접속한다', async () => {
+      await request(app.getHttpServer()).get('/user/form').expect(200);
+    });
+  });
 });

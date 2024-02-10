@@ -64,12 +64,20 @@ res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
 
 ## 요구사항 2 - GET 방식으로 회원가입하기
 
-* 회원가입 메뉴를 클릭하면 `/user/form.html`으로 이동해서 회원가입
-* 요청값을 서버에 전달, 입력한 값을 저장
+> 1. 회원가입 메뉴를 클릭하면 `/user/form.html`으로 이동해서 회원가입
+> 2. 요청값을 서버에 전달, 입력한 값을 저장
+
+REST API(Representational State Transfer) 만들기
+
+> REST API: 주소를 정하는 규칙
+
+* GET: 서버의 자원을 조회, 가져올 때 사용
 
 ## 요구사항 3 - POST 방식으로 회원가입하기
 
-form 태그 method를 get에서 post로 수정한 후 회원가입
+> form 태그 메서드를 `GET`에서 `POST`로 수정한 후 회원가입
+
+* POST: 서버에 자원을 등록하고자 할 때 사용(예: 회원 가입)
 
 # ETC
 
