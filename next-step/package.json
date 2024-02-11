@@ -20,5 +20,8 @@
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node"
+  },
+  "dependencies": {
+    "winston": "^3.11.0"
   }
 }

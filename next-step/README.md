@@ -81,8 +81,61 @@ REST API(Representational State Transfer) 만들기
 
 # ETC
 
-## 로깅은 왜 필요한가?
+기본적으로 알고 있으면 유용한 정보
 
-로깅 라이브러리
+## 패키지 설치
 
-* Winston
+![img.png](posts/images/typescript-module.png)
+![img.png](posts/images/img.png)
+
+```shell
+yarn add winston
+yarn add express @types/express -D
+```
+
+타입스크립트로 프로젝트를 진행할 때 주의사항이 있다. 사용하려는 패키지가 `TS` 표시가 되어 있다면 한 번의 설치로 끝난다. 하지만 만약 `DT` 표시라면 따로 타입 설치를 진행해야 한다.
+
+## 로깅(Logging)
+
+로그는 애플리케이션의 작동 상태를 기록하는데 필수적인 도구다. 로그를 통해 소프트웨어 진입점을 추적하고, 예상치 못한 에러를 식벽할 수 있다.
+
+### 운영환경
+
+> `console.log`는 휘발성이다. 로그는 파일에 기록해두는 것이 좋다.
+
+`console.log`는 기본적인 디버깅 용도로 유용하지만, 실무에서 성능, 유연성, 분석 및 모니터링이 필요하기 때문에 전문 로그 라이브러리를 사용한다.
+대표적인 Node.js 라이브러리 `Winston`에 대해 알아보자.
+
+### 실제 사용하기
+
+> src/config: 환경 애플리케이션 설정을 관리 데이터베이스 연결 정보, API 등 정의
+
+```shell
+yarn add winston winston-daily-rotate-file
+```
+
+> 개발 의존성으로 설치하지 않는다.
+
+winston: 로그 라이브러리
+winston-daily-rotate-file: 날짜 별로 로그 관리
+
+개발 서버는 디버그로 운영 서버는 `info`로 설정, 배포할 때 설정 변경 가능 개발 서버는 디버그, 운영서버는 `info`로 바꿔서 배포 가능
+
+* 로그의 심각도는 다음과 같다. `info`를 설정한 경우, info 보다 심각한 단계 로그도 같이 기록된다.
+* 로그 포맷은 기본적으로 JSON으로 기록되지만 시간을 표시하려면 `timestamp`를 사용하는 것이 좋다.
+* `transports`는 로그 저장방식을 의미한다.
+    * `new transports.File`은 파일로 저장, `new transports.Console`은 콘솔에 출력한다.
+
+```js
+const levels = {
+  error: 0,
+  warn: 1,
+  info: 2,
+  http: 3,
+  verbose: 4,
+  debug: 5,
+  silly: 6
+};
+```
+
+> helmet, hpp로 보안 관리하기

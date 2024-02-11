@@ -1,6 +1,7 @@
 import http from 'node:http';
 import path from 'node:path';
 import fs from 'fs/promises';
+import { logger } from './middlewares/logger';
 
 export class App {
   private readonly server: http.Server;
@@ -13,6 +14,8 @@ export class App {
 
   private async requestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
     try {
+      logger.info(`${req.url}`); // 요청 로깅
+
       if (req.url === '/') {
         const filePath = path.join(__dirname, '..', 'views', 'index.html');
         const data = await fs.readFile(filePath, 'utf8');
@@ -39,6 +42,7 @@ export class App {
   listen() {
     this.server.listen(this.port, this.hostname, () => {
       console.log(`서버 실행://${this.hostname}:${this.port}/`);
+      logger.info(`서버 실행://${this.hostname}:${this.port}/`);
     });
   }
 
