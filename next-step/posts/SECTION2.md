@@ -8,11 +8,25 @@
 
 ## 🙂 해결
 
-이전에 사용하던 `url.parse()` 함수는 더 이상 제공되지 않는다. 문제를 해결하기 위해서는 다른 방법을 강구해야 한다.
+### URI 파싱
 
+> [토스 url.parse() 취약점](https://toss.tech/article/nodejs-security-contribution)
+
+```typescript
+const baseURL: string = `http://${req.headers.host}`;
+const parsedURL = new URL(req.url, baseURL);
 ```
-url.parse(urlString[, parseQueryString[, slashesDenoteHost]]); -> new URL(input[,base]); 
+
+이전에 사용하던 `url.parse()` 함수는 사용이 중단되었다. 문제를 해결하기 위해서는 `URL API`를 사용해야 한다.
+
+### 출력값
+
+```typescript
+const user = new User(userId, password, name, email);
+logger.info(`User model에 저장된 데이터: ${JSON.stringify(user)}`);
 ```
+
+JavaScript의 값이나 객체를 JSON 문자열로 변환하고 로거를 사용해야 저장된 객체의 세부정보를 확인할 수 있다.
 
 ## 🏝️ 쉬어가기
 

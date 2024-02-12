@@ -17,7 +17,7 @@ import { CommonModule } from './common/common.module';
       type: 'postgres',
       host: '127.0.0.1',
       port: 5432,
-      userId: 'postgres',
+      username: 'postgres',
       password: 'postgres',
       database: 'postgres',
       entities: [PostsModel, UsersModel],
