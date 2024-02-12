@@ -62,7 +62,7 @@ yarn add jest ts-jest supertest @types/jest @types/supertest -D
 res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
 ```
 
-## 요구사항 2 - GET 방식으로 회원가입하기
+## [요구사항 2 - GET 방식으로 회원가입하기]()
 
 > 1. 회원가입 메뉴를 클릭하면 `/user/form.html`으로 이동해서 회원가입
 > 2. 요청값을 서버에 전달, 입력한 값을 저장
