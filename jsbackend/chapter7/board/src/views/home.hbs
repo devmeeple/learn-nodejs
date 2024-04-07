@@ -1,2 +1,43 @@
-<h2>{{{title}}}</h2>
-<p>{{{message}}}</p>
+<!-- 게시글 제목 -->
+<h1>{{{title}}}</h1>
+
+<!-- 검색어 -->
+<div>
+  <label for='search'></label><input type='text' name='search' id='search' value='' size='50' placeholder='검색어를 입력하세요'>
+  <button>검색</button>
+</div>
+
+<div>
+  <a href='/write'>글쓰기</a>
+</div>
+
+<!-- 글 목록 -->
+<div>
+  <table>
+    <thead>
+    <tr>
+      <th>제목</th>
+      <th>작성자</th>
+      <th>조회수</th>
+      <th>등록일</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><a href='/detail'>타이틀</a></td>
+      <td>작성자 이름</td>
+      <td>99999</td>
+      <td>2024.04.07</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- 페이징 -->
+<div>
+  <a>&lt;&lt;</a>
+  <a>&gt;</a>
+  <a>&gt;&gt;</a>
+</div>
+
+
