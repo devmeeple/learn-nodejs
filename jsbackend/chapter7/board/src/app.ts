@@ -5,8 +5,8 @@ import 'dotenv/config';
 const app = express();
 const port = process.env.PORT;
 
-app.engine('handlebars', engine()); // 템플릿 엔진 handlebars 등록
-app.set('view engine', 'handlebars');
+app.engine('.hbs', engine({ extname: '.hbs' })); // 템플릿 엔진 handlebars 등록
+app.set('view engine', '.hbs');
 app.set('views', __dirname + '/views');
 
 // 라우터 설정
