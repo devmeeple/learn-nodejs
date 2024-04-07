@@ -18,6 +18,14 @@ app.get('/write', (req, res) => {
   res.render('write', { title: '테스트 게시판' });
 });
 
+// 왜 콜백을 사용했을까?
+app.get('/post/:id', async (req, res) => {
+  console.log(req.params.id);
+  res.render('post', {
+    title: '테스트 게시판',
+  });
+});
+
 app.listen(port, () => {
   console.log(`[server]: 서버 실행 http://localhost:${port}`);
 });
