@@ -63,3 +63,25 @@ project-root/
 
 - 글: 쓰기(write) -> 전체글 조회(/) -> 상세보기(post) -> 수정(edit), 삭제(delete)
 - 댓글: 쓰기 -> 삭제
+
+## Jest 설치 오류
+
+```shell
+yarn run v1.22.19
+$ jest
+Error [ERR_REQUIRE_ESM]: require() of ES Module ...
+```
+
+- package manager: yarn
+
+Typescript + Jest 환경구성중 다음과 같은 오류가 발생했다. 설치는 문제가 없지만 테스트 실행이 되지 않는다.
+
+1. `yarn cache clean`
+2. `node_modules`, `yarn.lock` 삭제
+3. `yarn` 패키지 재설치
+
+다음과 같은 순서로 문제를 해결했다.
+
+### 참고자료
+
+- [ERR_REQUIRE_ESM](https://tsukurue.com/en/archives/935)
