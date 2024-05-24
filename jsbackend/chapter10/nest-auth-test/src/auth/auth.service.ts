@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 /**
  * register: 회원가입
+ * validateUser: 이메일, 패스워드 검증
  */
 @Injectable()
 export class AuthService {
@@ -36,5 +37,22 @@ export class AuthService {
     } catch (error) {
       throw new HttpException('서버 에러', HttpStatus.INTERNAL_SERVER_ERROR);
     }
+  }
+
+  async validateUser(email: string, password: string) {
+    const user = await this.userService.getUser(email);
+
+    // 유저가 없으면 검증 실패
+    if (!user) {
+      return null;
+    }
+
+    // 구조 분해 할당
+    const { password: hashedPassword, ...userInfo } = user;
+
+    if (bcrypt.compareSync(password, hashedPassword)) {
+      return userInfo;
+    }
+    return null;
   }
 }
