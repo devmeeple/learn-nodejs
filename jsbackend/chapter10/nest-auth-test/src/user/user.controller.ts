@@ -8,7 +8,7 @@ import {
   Put,
 } from '@nestjs/common';
 import { UserService } from './user.service';
-import { User } from './entity/user.entity';
+import { CreateUserDto, UpdateUserDto } from './dto/user.dto';
 
 /**
  * create: 유저 생성 http POST :3000/user username=andy password=test1234 email=andy@podo.com
@@ -21,7 +21,7 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Post()
-  createUser(@Body() user: User) {
+  createUser(@Body() user: CreateUserDto) {
     return this.userService.createUser(user);
   }
 
@@ -31,7 +31,7 @@ export class UserController {
   }
 
   @Put('/:email')
-  updateUser(@Param('email') email: string, @Body() user: User) {
+  updateUser(@Param('email') email: string, @Body() user: UpdateUserDto) {
     return this.userService.updateUser(email, user);
   }
 
