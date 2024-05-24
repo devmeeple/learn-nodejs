@@ -14,21 +14,18 @@ export class UserService {
     return this.userRepository.save(user);
   }
 
-  async getUser(email: string) {
-    const findByUser = await this.userRepository.findOne({
+  getUser(email: string) {
+    return this.userRepository.findOne({
       where: { email },
     });
-    return findByUser;
   }
 
   async updateUser(email: string, user: User) {
     const findByUser = await this.getUser(email);
-    console.log(findByUser);
 
     findByUser.username = user.username;
     findByUser.password = user.password;
 
-    console.log(findByUser);
     await this.userRepository.save(findByUser);
   }
 

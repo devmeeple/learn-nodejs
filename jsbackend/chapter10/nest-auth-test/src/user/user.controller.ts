@@ -11,10 +11,10 @@ import { UserService } from './user.service';
 import { User } from './entity/user.entity';
 
 /**
- * create: 유저 생성
- * email: 유저 정보 확인
- * update: 유저 정보 수정
- * delete: 유저 삭제
+ * create: 유저 생성 http POST :3000/user username=andy password=test1234 email=andy@podo.com
+ * email: 유저 정보 확인 http :3000/user/andy@podo.com
+ * update: 유저 정보 수정 http PUT :3000/user/andy@podo.com email=andy@podo.com username=andy2 password=test12345
+ * delete: 유저 삭제 http DELETE :3000/user/andy@podo.com
  */
 @Controller('user')
 export class UserController {
@@ -26,10 +26,8 @@ export class UserController {
   }
 
   @Get('/:email')
-  async getUser(@Param('email') email: string) {
-    const user = await this.userService.getUser(email);
-    console.log(user);
-    return user;
+  getUser(@Param('email') email: string) {
+    return this.userService.getUser(email);
   }
 
   @Put('/:email')
