@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/user.dto';
-import { LoginGuard } from './auth.guard';
+import { AuthenticatedGuard, LocalAuthGuard, LoginGuard } from './auth.guard';
 
 /**
  * register: 회원가입 http :3000/auth/register email=andy5@podo.com password=1234 username=andy
@@ -59,5 +59,19 @@ export class AuthController {
   @Get('test-guard')
   testGuard() {
     return '로그인 성공하면 보이는 글';
+  }
+
+  // http POST :3000/auth/login3 email=andy5@podo.com password=1234
+  @UseGuards(LocalAuthGuard)
+  @Post('login3')
+  login3(@Request() req) {
+    return req.user;
+  }
+
+  // http :3000/auth/test-guard2 'Cookie: <cookie>'
+  @UseGuards(AuthenticatedGuard)
+  @Get('test-guard2')
+  testGuardWithSession(@Request() req) {
+    return req.user;
   }
 }
