@@ -25,3 +25,19 @@ yarn add @nestjs/typeorm typeorm sqlite3
 ```
 
 테이블과 매핑하는 클래스를 '엔티티(Entity)'라고 한다.
+
+## UsersModule
+
+* `POST /users`: 유저 등록
+* `GET /users/{email}`: 유저 상세 조회
+* `PUT /users/{email}`: 정보 수정
+* `DELETE /users/{email}`: 삭제
+
+* **유저 등록 기능**
+    * 사용자가 이메일(email), 이름(username), 비밀번호(password)를 입력하면 유저가 등록된다.
+* **유저 상세 조회 기능**
+    * 사용자는 이메일(email)을 사용해 상세 정보를 조회할 수 있다.
+* **유저 수정 기능**
+    * 사용자는 이름(username), 비밀번호(password)를 수정할 수 있다.
+* **유저 삭제 기능**
+    * 사용자는 이메일(email)을 사용해 정보를 삭제할 수 있다.
