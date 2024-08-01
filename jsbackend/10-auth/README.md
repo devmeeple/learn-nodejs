@@ -50,8 +50,16 @@ yarn add @nestjs/typeorm typeorm sqlite3
 yarn add class-validator class-transformer
 ```
 
-* `class-transformer`: JSON 요청 정보(payload)를 클래스 객체로 변경한다.
-* `class-validator`: 데코레이터를 사용해서 유효성 검증을 한다.
+> * `class-transformer`: JSON 요청 정보(payload)를 클래스 객체로 변경한다.
+> * `class-validator`: 데코레이터를 사용해서 유효성 검증을 한다.
+
+* `class-validator`에서 제공하는 데코레이터로(decorator)로 유효성 검증을 실행한다.
+* DTO(Data Transfer Object) 단위 테스트 코드를 추가한다.
+
+**<리팩터링>**
+
+* 전역 설정을 따로 분리한다.
+* `message`를 일반화시키고 관리한다.
 
 **<참고 자료>**
 
