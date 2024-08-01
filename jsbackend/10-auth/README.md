@@ -28,10 +28,10 @@ yarn add @nestjs/typeorm typeorm sqlite3
 
 ## UsersModule
 
-* `POST /users`: 유저 등록
-* `GET /users/{email}`: 유저 상세 조회
-* `PUT /users/{email}`: 정보 수정
-* `DELETE /users/{email}`: 삭제
+> * `POST /users`: 유저 등록
+> * `GET /users/{email}`: 유저 상세 조회
+> * `PUT /users/{email}`: 정보 수정
+> * `DELETE /users/{email}`: 삭제
 
 * **유저 등록 기능**
     * 사용자가 이메일(email), 이름(username), 비밀번호(password)를 입력하면 유저가 등록된다.
@@ -67,3 +67,23 @@ yarn add class-validator class-transformer
 * [NestJS 'Validation'](https://docs.nestjs.com/techniques/validation)
 * [향로 'NestJS에서 응답/요청 객체 직렬화(Serialization) 하기](https://jojoldu.tistory.com/610)
 * [코드팩토리 'Validation Message 일반화 하기'](https://inf.run/Xt6jc)
+
+## 인증 모듈(Auth Module)
+
+### 만들기
+
+```shell
+nest g mo auth
+nest g s auth --no-spec
+nest g co auth --no-spec
+```
+
+### 구조
+
+> * `POST /auth/register`: 유저를 등록
+> * `POST /auth/login`: 로그인
+> * `POST /auth/logout`: 로그아웃
+
+### 설정하기
+
+유저 서비스를 내보내기(exports)하고 인증 모듈에서 주입받는다.

@@ -8,5 +8,6 @@ import { User } from './entities/user.entity';
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UsersController],
   providers: [UsersService],
+  exports: [UsersService], // 인증 모듈(Auth Module)에서 사용할 수 있도록 내보내기
 })
 export class UsersModule {}
