@@ -43,3 +43,16 @@ yarn add @nestjs/typeorm typeorm sqlite3
 * **유저 삭제 기능**
     * 사용자는 이메일(email)을 사용해 정보를 삭제할 수 있다.
     * 이메일을 잘못 입력하면 삭제에 실패한다.
+
+### 파이프로 유효성 검증하기
+
+```shell
+yarn add class-validator class-transformer
+```
+
+* `class-transformer`: JSON 요청 정보(payload)를 클래스 객체로 변경한다.
+* `class-validator`: 데코레이터를 사용해서 유효성 검증을 한다.
+
+**<참고 자료>**
+
+* [NestJS 'Validation'](https://docs.nestjs.com/techniques/validation)
