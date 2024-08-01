@@ -21,21 +21,24 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  findByEmail(email: string) {
-    return this.userRepository.findOne({
+  async findByEmail(email: string) {
+    const user = await this.userRepository.findOne({
       where: {
         email,
       },
     });
+
+    if (!user) {
+      throw new NotFoundException(
+        `${email}에 해당하는 유저를 찾을 수 없습니다`,
+      );
+    }
+
+    return user;
   }
 
   async update(email: string, updateUserDto: UpdateUserDto) {
     const user = await this.findByEmail(email);
-    if (!user) {
-      return new NotFoundException(
-        `${email}에 해당하는 유저를 찾을 수 없습니다`,
-      );
-    }
 
     const updatedUser = {
       ...user,
@@ -45,7 +48,15 @@ export class UsersService {
     return this.userRepository.save(updatedUser);
   }
 
-  remove(email: string) {
-    return this.userRepository.delete({ email });
+  async remove(email: string) {
+    const result = await this.userRepository.delete({ email });
+
+    if (result.affected === 0) {
+      throw new NotFoundException(
+        `${email}을 해당하는 유저를 삭제할 수 없습니다`,
+      );
+    }
+
+    return result;
   }
 }
