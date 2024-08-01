@@ -5,6 +5,7 @@ import { AppModule } from '../src/app.module';
 import { Repository } from 'typeorm';
 import { User } from '../src/users/entities/user.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { setNestApp } from '../src/common/set-config';
 
 describe('AppController (e2e)', () => {
   let app: INestApplication;
@@ -18,6 +19,8 @@ describe('AppController (e2e)', () => {
     repository = moduleFixture.get<Repository<User>>(getRepositoryToken(User));
 
     app = moduleFixture.createNestApplication();
+
+    setNestApp(app); // Validation 전역 적용
     await app.init();
   });
 
@@ -50,6 +53,21 @@ describe('AppController (e2e)', () => {
         .post('/users')
         .send(user)
         .expect(HttpStatus.CREATED);
+    });
+
+    it('이메일을 잘못 입력하면 에러가 발생한다', () => {
+      // given
+      const invalidUser = {
+        email: 'andy-podo',
+        username: 'andy',
+        password: 'test1234',
+      };
+
+      // when + then
+      return request(app.getHttpServer())
+        .post('/users')
+        .send(invalidUser)
+        .expect(HttpStatus.BAD_REQUEST);
     });
   });
 

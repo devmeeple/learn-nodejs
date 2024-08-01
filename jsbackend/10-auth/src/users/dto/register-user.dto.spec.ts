@@ -35,7 +35,7 @@ describe('RegisterUserDto', () => {
     expect(sut.length).toEqual(1);
     expect(sut[0].property).toEqual('email');
     expect(sut[0].constraints).toEqual({
-      isEmail: '이메일 형식을 입력해주세요',
+      isEmail: 'email 이메일 형식을 입력하세요',
     });
   });
 

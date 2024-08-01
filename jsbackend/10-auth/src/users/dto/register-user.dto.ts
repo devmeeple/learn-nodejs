@@ -1,13 +1,14 @@
 import { IsEmail, IsString } from 'class-validator';
-import { isEmailMessage } from '../../common/error/validation-message';
+import { emailValidationMessage } from '../../common/validation-message/email-validation.message';
+import { stringValidationMessage } from '../../common/validation-message/string-validation.message';
 
 export class RegisterUserDto {
-  @IsEmail({}, { message: isEmailMessage })
+  @IsEmail({}, { message: emailValidationMessage })
   email: string;
 
-  @IsString()
+  @IsString({ message: stringValidationMessage })
   username: string;
 
-  @IsString()
+  @IsString({ message: stringValidationMessage })
   password: string;
 }
