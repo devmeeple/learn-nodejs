@@ -17,4 +17,9 @@ export class Post {
     post.content = content;
     return post;
   }
+
+  update(title: string, content: string) {
+    this.title = title;
+    this.content = content;
+  }
 }

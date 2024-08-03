@@ -119,4 +119,29 @@ describe('PostsController (e2e)', () => {
       expect(posts).toEqual([]);
     });
   });
+
+  describe('[PUT] /posts/:id', () => {
+    it('블로그 글을 수정한다', async () => {
+      // given
+      const savedPost = Post.create('title', 'content');
+      const { id } = await postsRepository.save(savedPost);
+      const url = `/posts/${id}`;
+
+      const updateRequest = {
+        title: 'new Title',
+        content: 'new Content',
+      };
+
+      // when
+      await request(app.getHttpServer())
+        .put(url)
+        .send(updateRequest)
+        .expect(HttpStatus.OK);
+
+      // then
+      const post = await postsRepository.findOne({ where: { id } });
+      expect(post.title).toEqual('new Title');
+      expect(post.content).toEqual('new Content');
+    });
+  });
 });
