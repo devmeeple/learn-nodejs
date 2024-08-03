@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AddPostRequest } from './dto/add-post.dto';
 
@@ -14,5 +14,10 @@ export class PostsController {
   @Get()
   findAllPost() {
     return this.postsService.findAll();
+  }
+
+  @Get(':id')
+  findOnePost(@Param('id') id: number) {
+    return this.postsService.findById(id);
   }
 }

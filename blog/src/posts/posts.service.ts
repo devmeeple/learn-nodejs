@@ -18,4 +18,12 @@ export class PostsService {
   findAll() {
     return this.postsRepository.find();
   }
+
+  findById(id: number) {
+    return this.postsRepository.findOne({
+      where: {
+        id,
+      },
+    });
+  }
 }

@@ -60,7 +60,7 @@ describe('PostsController (e2e)', () => {
   });
 
   describe('[GET] /posts', () => {
-    it('블로그 글 목록 조회에 성공한다', async () => {
+    it('블로그 글 목록조회에 성공한다', async () => {
       // given
       const url = '/posts';
       const post = Post.create('title', 'content');
@@ -74,6 +74,24 @@ describe('PostsController (e2e)', () => {
       // then
       expect(body[0].title).toEqual('title');
       expect(body[0].content).toEqual('content');
+    });
+  });
+
+  describe('[GET] /posts/:id', () => {
+    it('블로그 글 상세조회에 성공한다', async () => {
+      // given
+      const post = Post.create('title', 'content');
+      const { id } = await postsRepository.save(post);
+      const url = `/posts/${id}`;
+
+      // when
+      const { body } = await request(app.getHttpServer())
+        .get(url)
+        .expect(HttpStatus.OK);
+
+      // then
+      expect(body.title).toEqual('title');
+      expect(body.content).toEqual('content');
     });
   });
 });
