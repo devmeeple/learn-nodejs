@@ -14,3 +14,8 @@
 | title   | VARCHAR(255) | N       |     | 게시글 제목 |
 | content | VARCHAR(255) | N       |     | 게시글 내용 |
 
+### 글 작성하기
+
+`[POST] /posts`
+
+제목, 내용을 입력하면 글을 작성할 수 있다.
