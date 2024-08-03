@@ -93,5 +93,14 @@ describe('PostsController (e2e)', () => {
       expect(body.title).toEqual('title');
       expect(body.content).toEqual('content');
     });
+
+    it('없는 게시글을 조회하면 에러가 발생한다', async () => {
+      // given
+      const id = 999;
+      const url = `/posts/${id}`;
+
+      // when + then
+      return request(app.getHttpServer()).get(url).expect(HttpStatus.NOT_FOUND);
+    });
   });
 });
