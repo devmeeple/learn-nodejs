@@ -103,4 +103,20 @@ describe('PostsController (e2e)', () => {
       return request(app.getHttpServer()).get(url).expect(HttpStatus.NOT_FOUND);
     });
   });
+
+  describe('[DELETE] /posts/:id', () => {
+    it('블로그 글을 삭제한다', async () => {
+      // given
+      const post = Post.create('title', 'content');
+      const { id } = await postsRepository.save(post);
+      const url = `/posts/${id}`;
+
+      // when
+      await request(app.getHttpServer()).delete(url).expect(HttpStatus.OK);
+      const posts = await postsRepository.find();
+
+      // then
+      expect(posts).toEqual([]);
+    });
+  });
 });
