@@ -14,4 +14,8 @@ export class PostsService {
     const post = this.postsRepository.create(request);
     return this.postsRepository.save(post);
   }
+
+  findAll() {
+    return this.postsRepository.find();
+  }
 }
